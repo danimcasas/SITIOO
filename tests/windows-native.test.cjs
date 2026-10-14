@@ -1,0 +1,11 @@
+const {test}=require('node:test');const assert=require('node:assert/strict');const path=require('node:path');const fs=require('node:fs/promises');const {spawn}=require('node:child_process');const {WindowsNative}=require('../packages/engine/windows-native.cjs');const {run,waitFor}=require('../packages/engine/process.cjs');
+const helper=path.resolve('.local/engine-windows-x64/bin/sitioo-win.exe');const options={skip:process.platform!=='win32'};
+test('DPAPI real protege, recupera y rechaza datos alterados',options,async()=>{const native=new WindowsNative(helper),value={fictitious:require('node:crypto').randomBytes(24).toString('hex')};const encrypted=await native.encrypt(value);assert.ok(!encrypted.includes(Buffer.from(value.fictitious)));assert.deepEqual(await native.decrypt(encrypted),value);encrypted[encrypted.length-12]^=1;await assert.rejects(native.decrypt(encrypted),/descifrar/);});
+test('supervisor conserva literalmente argumentos con espacios, acentos y símbolos',options,async()=>{const values=['Espacio á é ñ','"texto"','C:\\Ruta con espacio\\','$(nunca); & valor'];const r=await run(process.execPath,['-e','process.stdout.write(JSON.stringify(process.argv.slice(1)))',...values],{nativeHelper:helper});assert.deepEqual(JSON.parse(r.stdout),values);});
+test('el cierre inesperado del padre termina solo su árbol gestionado',options,async()=>{
+ const source=`const {spawn}=require('node:child_process');const child=spawn(${JSON.stringify(helper)},['launch',process.execPath,'-e',"process.stdout.write(String(process.pid));setInterval(()=>{},1000)"],{stdio:['ignore','pipe','ignore'],windowsHide:true});child.stdout.pipe(process.stdout);setInterval(()=>{},1000);`;
+ const parent=spawn(process.execPath,['-e',source],{stdio:['ignore','pipe','ignore'],windowsHide:true});let pid;
+ try{pid=await new Promise((resolve,reject)=>{const t=setTimeout(()=>reject(new Error('No se inició el proceso de prueba.')),10000);parent.stdout.once('data',data=>{clearTimeout(t);resolve(Number(data.toString().trim()));});});assert.ok(pid>0);parent.kill();await new Promise(r=>parent.once('close',r));await waitFor(()=>{try{process.kill(pid,0);return false;}catch(e){return e.code==='ESRCH';}},10000);}
+ finally{if(parent.exitCode===null&&!parent.signalCode)parent.kill();}
+});
+

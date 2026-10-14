@@ -1,0 +1,179 @@
+{
+  "name": "sitioo",
+  "version": "0.2.0-beta.2",
+  "private": true,
+  "description": "Tu web empieza aquí. WordPress local para Windows y macOS.",
+  "main": "apps/desktop/main.cjs",
+  "scripts": {
+    "test": "node --test tests/*.test.cjs",
+    "start": "electron .",
+    "pack": "electron-builder --mac dir",
+    "dist:mac": "electron-builder --mac dmg",
+    "release:mac": "node scripts/release-mac.cjs",
+    "prepare:migration": "node scripts/prepare-migration.cjs",
+    "prepare:windows": "pwsh -NoProfile -File scripts/build-native.ps1 && pwsh -NoProfile -File scripts/prepare-windows.ps1 && pwsh -NoProfile -File scripts/prepare-crt.ps1 && node scripts/prepare-migration.cjs",
+    "dist:win": "electron-builder --win nsis --x64",
+    "test:windows": "node scripts/run-windows-tests.cjs",
+    "test:migration:windows": "node scripts/test-migration-windows.cjs"
+  },
+  "build": {
+    "appId": "local.sitioo.desktop",
+    "productName": "SITIOO",
+    "directories": {
+      "output": "dist/0.2.0-beta.2"
+    },
+    "files": [
+      "apps/**/*",
+      "packages/**/*",
+      "config/**/*",
+      "package.json",
+      "LICENSE"
+    ],
+    "extraResources": [
+      {
+        "from": ".local/migration-assets",
+        "to": "migration"
+      }
+    ],
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64"
+          ]
+        }
+      ],
+      "category": "public.app-category.developer-tools",
+      "identity": null,
+      "minimumSystemVersion": "26.0",
+      "icon": "config/assets/sitioo.icns",
+      "extraResources": [
+        {
+          "from": ".local/engine",
+          "to": "engine"
+        }
+      ]
+    },
+    "dmg": {
+      "title": "SITIOO Beta",
+      "contents": [
+        {
+          "x": 170,
+          "y": 230
+        },
+        {
+          "x": 490,
+          "y": 230,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ],
+      "icon": "config/assets/sitioo.icns",
+      "background": "config/assets/dmg-background.png",
+      "window": {
+        "width": 660,
+        "height": 430
+      },
+      "iconSize": 100,
+      "iconTextSize": 14
+    },
+    "artifactName": "SITIOO-${version}-${arch}.${ext}",
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "config/assets/sitioo.png",
+      "artifactName": "SITIOO-${version}-windows-x64-setup.${ext}",
+      "extraResources": [
+        {
+          "from": ".local/engine-windows-x64",
+          "to": "engine",
+          "filter": [
+            "**/*",
+            "!**/*.pdb",
+            "!**/*.extracted.sha256",
+            "!php/dev/**",
+            "!php/lib/**",
+            "!php/extras/**",
+            "!php/php-cgi.exe",
+            "!php/php-win.exe",
+            "!php/phpdbg.exe",
+            "!php/deplister.exe",
+            "!php/php8phpdbg.dll",
+            "!php/*.lib",
+            "!php/glib-2.dll",
+            "!php/gmodule-2.dll",
+            "!php/gobject-2.dll",
+            "!php/libenchant2.dll",
+            "!php/libpq.dll",
+            "!php/libsasl.dll",
+            "!php/libsqlite3.dll",
+            "!php/snapshot.txt",
+            "!php/phar.phar.bat",
+            "!php/pharcommand.phar",
+            "!php/ext/php_bz2.dll",
+            "!php/ext/php_com_dotnet.dll",
+            "!php/ext/php_dba.dll",
+            "!php/ext/php_dl_test.dll",
+            "!php/ext/php_enchant.dll",
+            "!php/ext/php_exif.dll",
+            "!php/ext/php_ffi.dll",
+            "!php/ext/php_ftp.dll",
+            "!php/ext/php_gettext.dll",
+            "!php/ext/php_gmp.dll",
+            "!php/ext/php_ldap.dll",
+            "!php/ext/php_odbc.dll",
+            "!php/ext/php_opcache.dll",
+            "!php/ext/php_pdo_firebird.dll",
+            "!php/ext/php_pdo_odbc.dll",
+            "!php/ext/php_pdo_pgsql.dll",
+            "!php/ext/php_pdo_sqlite.dll",
+            "!php/ext/php_pgsql.dll",
+            "!php/ext/php_shmop.dll",
+            "!php/ext/php_snmp.dll",
+            "!php/ext/php_soap.dll",
+            "!php/ext/php_sockets.dll",
+            "!php/ext/php_sqlite3.dll",
+            "!php/ext/php_sysvshm.dll",
+            "!php/ext/php_tidy.dll",
+            "!php/ext/php_xsl.dll",
+            "!php/ext/php_zend_test.dll"
+          ]
+        },
+        {
+          "from": "licenses",
+          "to": "licenses"
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": false,
+      "allowToChangeInstallationDirectory": true,
+      "packElevateHelper": false,
+      "deleteAppDataOnUninstall": false,
+      "createDesktopShortcut": false,
+      "createStartMenuShortcut": true,
+      "runAfterFinish": false,
+      "installerLanguages": [
+        "es_ES"
+      ],
+      "include": "config/installer.nsh",
+      "license": "LICENSE"
+    },
+    "forceCodeSigning": false
+  },
+  "devDependencies": {
+    "electron": "44.7.0",
+    "electron-builder": "26.15.3"
+  },
+  "author": "danimcasas.com e iNextalent.com",
+  "license": "GPL-2.0-or-later"
+}

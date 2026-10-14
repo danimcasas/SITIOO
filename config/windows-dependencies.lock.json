@@ -1,0 +1,65 @@
+[
+  {
+    "name": "php-8.4.26-nts-Win32-vs17-x64.zip",
+    "url": "https://windows.php.net/downloads/releases/php-8.4.26-nts-Win32-vs17-x64.zip",
+    "sha256": "da68394f9193b7f6b89d0c76861a4034ae10efee7fd55a7255d8118c2acf70d7",
+    "bytes": 35103568,
+    "provider_sha256": true
+  },
+  {
+    "name": "php-8.4.26-src.zip",
+    "url": "https://windows.php.net/downloads/releases/php-8.4.26-src.zip",
+    "sha256": "abaca319deb54e5e0af9c3fba606b23e54964dad5c96fe54a63931b0f8bc2d04",
+    "bytes": 31548617,
+    "provider_sha256": true
+  },
+  {
+    "name": "mariadb-11.4.13-winx64.zip",
+    "url": "https://archive.mariadb.org/mariadb-11.4.13/winx64-packages/mariadb-11.4.13-winx64.zip",
+    "sha256": "d62986d433eeebfde218560b276103831604a61e929e87f1a17f5aebd80257e2",
+    "bytes": 95024126,
+    "provider_sha256": true
+  },
+  {
+    "name": "mariadb-11.4.13.tar.gz",
+    "url": "https://archive.mariadb.org/mariadb-11.4.13/source/mariadb-11.4.13.tar.gz",
+    "sha256": "1bb254b106d0a7ca871cfa18fa6e18d4b80a7430f9ec9d1571ec4271a13def96",
+    "bytes": 221118336,
+    "provider_sha256": true
+  },
+  {
+    "name": "wordpress-7.1.3.zip",
+    "url": "https://downloads.wordpress.org/release/wordpress-7.1.3.zip",
+    "sha256": "eb58a90ed55147f90f7bd55d0d3334960a69b7e8a4cc142c8ddfea8965218227",
+    "bytes": 37226383,
+    "provider_sha256": false
+  },
+  {
+    "name": "wordpress-7.1.3-es_ES.zip",
+    "url": "https://downloads.wordpress.org/translation/core/7.1.3/es_ES.zip",
+    "sha256": "e0b6ea508cce2b6aa916bd89ed83ad27d039bb741b66b134f9d67eb45a1736a1",
+    "bytes": 1226393,
+    "provider_sha256": false
+  },
+  {
+    "name": "wp-cli-2.12.0.phar",
+    "url": "https://github.com/wp-cli/wp-cli/releases/download/v2.12.0/wp-cli-2.12.0.phar",
+    "sha256": "ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b68220d85c",
+    "bytes": 7142777,
+    "provider_sha256": true
+  },
+  {
+    "name": "cacert-2026-09-25.pem",
+    "url": "https://curl.se/ca/cacert-2026-09-25.pem",
+    "sha256": "a41b5d356aea97a529fe27e0f7316d2f9d946d75927476cf9cf1b90637d00505",
+    "bytes": 188900,
+    "provider_sha256": true
+  },
+  {
+    "name": "vc_redist.x64.exe",
+    "url": "https://aka.ms/vc14/vc_redist.x64.exe",
+    "sha256": "843068991daaa1f73ad9f6239bce4d0f6a07a51f18c37ea2a867e9beca71295c",
+    "bytes": 18731856,
+    "provider_sha256": false
+  }
+]

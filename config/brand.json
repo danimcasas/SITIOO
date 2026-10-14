@@ -1,0 +1,13 @@
+{
+  "name": "SITIOO",
+  "tagline": "Tu web empieza aqu\u00ed.",
+  "version": "0.2.0-beta.2",
+  "accent": "#6d4aff",
+  "icon": "../../config/assets/sitioo.png",
+  "creators": [
+    "danimcasas.com",
+    "iNextalent.com"
+  ],
+  "license": "GPL-2.0-or-later"
+}
+

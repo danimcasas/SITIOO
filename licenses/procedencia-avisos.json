@@ -1,0 +1,56 @@
+[
+  {
+    "file": "Microsoft-Visual-C-v14-2026.docx",
+    "url": "https://visualstudio.microsoft.com/wp-content/uploads/2025/10/Visual-C-V14-License-Redistributable_and_Runtime_ENU.docx",
+    "status": "guardado",
+    "sha256": "08651651a7602fc7c0e2763de0fde1ff9f868df2780597cd1775ee9d6441c783"
+  },
+  {
+    "file": "OpenSSL-Apache-2.0.txt",
+    "url": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.0.22/LICENSE.txt",
+    "status": "guardado",
+    "sha256": "7d5450cb2d142651b8afa315b5f238efc805dad827d91ba367d8516bc9d49e7a"
+  },
+  {
+    "file": "ICU-Unicode.txt",
+    "url": "https://raw.githubusercontent.com/unicode-org/icu/release-77-1/LICENSE",
+    "status": "guardado",
+    "sha256": "451167c55c0fa447cc2d5632714f5e3c567fe4f1e1badefab2c1333852198aca"
+  },
+  {
+    "file": "libsodium-ISC.txt",
+    "url": "https://raw.githubusercontent.com/jedisct1/libsodium/1.0.22-RELEASE/LICENSE",
+    "status": "guardado",
+    "sha256": "508a76d186356c0dd807a670ef510964f8724557024796a2c426c6c0e19ab683"
+  },
+  {
+    "file": "libssh2-BSD.txt",
+    "url": "https://raw.githubusercontent.com/libssh2/libssh2/libssh2-1.11.1/COPYING",
+    "status": "guardado",
+    "sha256": "f7f9633cf9ff2f1333f3d7ce46973a8716a4d2a2815ad56f30d437d5fea7bafe"
+  },
+  {
+    "file": "nghttp2-MIT.txt",
+    "url": "https://raw.githubusercontent.com/nghttp2/nghttp2/v1.70.0/COPYING",
+    "status": "guardado",
+    "sha256": "6b94f3abc1aabd0c72a7c7d92a77f79dda7c8a0cb3df839a97890b4116a2de2a"
+  },
+  {
+    "file": "Brotli-MIT.txt",
+    "url": "https://raw.githubusercontent.com/google/brotli/master/LICENSE",
+    "status": "guardado",
+    "sha256": "3d180008e36922a4e8daec11c34c7af264fed5962d07924aea928c38e8663c94"
+  },
+  {
+    "file": "Mozilla-MPL-2.0.txt",
+    "url": "https://www.mozilla.org/media/MPL/2.0/index.txt",
+    "status": "guardado",
+    "sha256": "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04"
+  },
+  {
+    "file": "curl-license.html",
+    "url": "https://curl.se/docs/copyright.html",
+    "status": "guardado",
+    "sha256": "8c404d1465ad207f867a7d2590dcd5e2b5ebdc47505c0d44ff874c236785b0a5"
+  }
+]

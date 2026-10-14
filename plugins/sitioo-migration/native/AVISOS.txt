@@ -1,0 +1,7 @@
+SITIOO Migration: danimcasas.com e iNextalent.com. GPL v2 o posterior.
+El ayudante sitioo-win.exe se compila con MSVC 19.29 (/MT) y Windows SDK.
+Su código completo y la receta de compilación se incluyen en native.
+Las bibliotecas de ejecución de Microsoft conservan los términos adjuntos.
+El ayudante de SITIOO no dispone de firma digital propia. En Windows,
+si su ejecución o la protección de carpetas falla, la importación se detiene.
+No desactivar protecciones del sistema para ejecutarlo.

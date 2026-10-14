@@ -1,0 +1,47 @@
+[
+  {
+    "file": "concrt140.dll",
+    "version": "14.51.36247.0",
+    "sha256": "54716f0738af891f283d213b5c8d11b25896bb8ee3097d301eae718560cf974e"
+  },
+  {
+    "file": "msvcp140_1.dll",
+    "version": "14.51.36247.0",
+    "sha256": "206c931bf90fdad8816de3b5e2ef80b2bcaa9406c89ecc05fe6fddffe251e982"
+  },
+  {
+    "file": "msvcp140_2.dll",
+    "version": "14.51.36247.0",
+    "sha256": "d50d7883f20d1dc6191768d3746f52dd9cac89c346ffaed5be1f110c2f34a838"
+  },
+  {
+    "file": "msvcp140_atomic_wait.dll",
+    "version": "14.51.36247.0",
+    "sha256": "3d0cbfaa1bf3eecf5a3f4491d2960ee803cb994f30292c6adc4a07c498f60e2b"
+  },
+  {
+    "file": "msvcp140_codecvt_ids.dll",
+    "version": "14.51.36247.0",
+    "sha256": "8a65c7596ef2e6938731f5a1058e7e40145b6d97967cc649231a076b9a608d78"
+  },
+  {
+    "file": "msvcp140.dll",
+    "version": "14.51.36247.0",
+    "sha256": "7c26614e1d733892c2deac7e245ce115504b1d80592dd0a01b08e3e5a55f89ca"
+  },
+  {
+    "file": "vcruntime140_1.dll",
+    "version": "14.51.36247.0",
+    "sha256": "a7146c08f89fe5b04541ab507cdb59ff7b44534d4ba3c668a426c6450a03434e"
+  },
+  {
+    "file": "vcruntime140_threads.dll",
+    "version": "14.51.36247.0",
+    "sha256": "40f39e8cee5f5a531b4010e18b807e8fe265b908dc58f959ecb7ebc6ea6cb11a"
+  },
+  {
+    "file": "vcruntime140.dll",
+    "version": "14.51.36247.0",
+    "sha256": "d1f4225df2cd877dbf130d5668a021dce3f94118455ff5ec952061c30afc9ce7"
+  }
+]

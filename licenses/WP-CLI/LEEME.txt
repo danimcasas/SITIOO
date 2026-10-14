@@ -1,0 +1,7 @@
+WP-CLI 2.12.0: inventario de los paquetes con archivos en el PHAR.
+componentes.json identifica versión y commit. procedencia.json registra los avisos.
+Se conservan también algunos avisos de dependencias de desarrollo presentes
+solo en los metadatos del proveedor; no se distribuye su código ejecutable.
+nb/oxymel declara MIT en su composer.json y no incluye LICENSE separado;
+se adjuntan íntegros su fuente y metadatos originales como atribución.
+Los archivos originales no se han alterado. El PHAR se adjunta en fuentes-terceros.
