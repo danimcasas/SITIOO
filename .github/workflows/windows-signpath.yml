@@ -1,0 +1,222 @@
+name: Windows build and SignPath
+run-name: SITIOO Windows · ${{ inputs.mode }}
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Rehearsal is unsigned; signpath requires Foundation acceptance and manual approval.
+        required: true
+        default: rehearsal
+        type: choice
+        options: [rehearsal, signpath]
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: sitioo-windows-signing
+  cancel-in-progress: false
+
+jobs:
+  windows:
+    if: github.repository == 'danimcasas/SITIOO'
+    runs-on: windows-2025
+    timeout-minutes: 180
+    defaults:
+      run:
+        shell: pwsh
+    env:
+      GIT_CONFIG_COUNT: '1'
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: 'false'
+      SITIOO_SIGNING_MODE: ${{ inputs.mode }}
+      SITIOO_SIGNING_DIR: ${{ github.workspace }}\.local\signing-${{ github.run_id }}-${{ github.run_attempt }}
+      npm_config_cache: ${{ github.workspace }}\.local\cache\npm
+      ELECTRON_CACHE: ${{ github.workspace }}\.local\cache\electron
+      ELECTRON_BUILDER_CACHE: ${{ github.workspace }}\.local\cache\electron-builder
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      SIGNPATH_CERTIFICATE_SHA256: ${{ vars.SIGNPATH_CERTIFICATE_SHA256 }}
+    steps:
+      - name: Checkout reviewed source
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: '24.12.0'
+          package-manager-cache: false
+      - name: Initialize a fresh signing workspace
+        env:
+          SIGNPATH_ORGANIZATION_ID: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          SIGNPATH_PROJECT_SLUG: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          SIGNPATH_SIGNING_POLICY_SLUG: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG }}
+          SIGNPATH_API_TOKEN: ${{ secrets.SIGNPATH_API_TOKEN }}
+        run: |
+          New-Item -ItemType Directory -Path .local -Force | Out-Null
+          node scripts/signpath/initialize.cjs
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $version = (Get-Content -LiteralPath package.json -Raw | ConvertFrom-Json).version
+          "SITIOO_VERSION=$version" >> $env:GITHUB_ENV
+      - name: Install locked build dependencies locally
+        run: npm ci --no-audit --no-fund
+      - name: Fetch and verify pinned Windows components
+        run: ./scripts/fetch-windows.ps1
+      - name: Compile native helper from source
+        run: ./scripts/build-native.ps1
+      - name: Stage native helper
+        run: node scripts/signpath/stage-native.cjs
+      - name: Upload native for verified signing
+        if: inputs.mode == 'signpath'
+        id: upload-native
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: sitioo-native-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.SITIOO_SIGNING_DIR }}/native/sitioo-win.exe
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 9
+      - name: Sign native with manual Foundation policy
+        if: inputs.mode == 'signpath'
+        uses: signpath/github-action-submit-signing-request@f6d04783b4569d051e0c80105fe66e82819d0092 # v3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: release-signing
+          artifact-configuration-slug: native
+          github-artifact-id: ${{ steps.upload-native.outputs.artifact-id }}
+          parameters: |
+            version: "${{ env.SITIOO_VERSION }}"
+          wait-for-completion: true
+          wait-for-completion-timeout-in-seconds: 2400
+          output-artifact-directory: ${{ env.SITIOO_SIGNING_DIR }}/native/signed
+      - name: Verify signed native and resume packaging
+        if: inputs.mode == 'signpath'
+        run: node scripts/signpath/control.cjs accept native
+      - name: Prepare engine and plugin after helper signing
+        run: |
+          node -e "require('app-builder-lib/out/toolsets/7zip').getPath7za().then(p=>console.log(p))"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          ./scripts/prepare-windows.ps1
+          ./scripts/prepare-crt.ps1
+          node scripts/prepare-migration.cjs
+      - name: Unit and signing safety tests
+        run: npm test
+      - name: Start packager
+        run: ./scripts/signpath/start-build.ps1
+      - name: Wait for application
+        run: node scripts/signpath/control.cjs wait application
+      - name: Upload application for verified signing
+        if: inputs.mode == 'signpath'
+        id: upload-application
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: sitioo-application-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.SITIOO_SIGNING_DIR }}/application/SITIOO.exe
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 9
+      - name: Sign application with manual Foundation policy
+        if: inputs.mode == 'signpath'
+        uses: signpath/github-action-submit-signing-request@f6d04783b4569d051e0c80105fe66e82819d0092 # v3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: release-signing
+          artifact-configuration-slug: application
+          github-artifact-id: ${{ steps.upload-application.outputs.artifact-id }}
+          parameters: |
+            version: "${{ env.SITIOO_VERSION }}"
+          wait-for-completion: true
+          wait-for-completion-timeout-in-seconds: 2400
+          output-artifact-directory: ${{ env.SITIOO_SIGNING_DIR }}/application/signed
+      - name: Verify signed application and resume packaging
+        if: inputs.mode == 'signpath'
+        run: node scripts/signpath/control.cjs accept application
+      - name: Wait for uninstaller
+        run: node scripts/signpath/control.cjs wait uninstaller
+      - name: Upload uninstaller for verified signing
+        if: inputs.mode == 'signpath'
+        id: upload-uninstaller
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: sitioo-uninstaller-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.SITIOO_SIGNING_DIR }}/uninstaller/SITIOO-${{ env.SITIOO_VERSION }}-windows-x64-setup.__uninstaller.exe
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 9
+      - name: Sign uninstaller with manual Foundation policy
+        if: inputs.mode == 'signpath'
+        uses: signpath/github-action-submit-signing-request@f6d04783b4569d051e0c80105fe66e82819d0092 # v3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: release-signing
+          artifact-configuration-slug: uninstaller
+          github-artifact-id: ${{ steps.upload-uninstaller.outputs.artifact-id }}
+          parameters: |
+            version: "${{ env.SITIOO_VERSION }}"
+          wait-for-completion: true
+          wait-for-completion-timeout-in-seconds: 2400
+          output-artifact-directory: ${{ env.SITIOO_SIGNING_DIR }}/uninstaller/signed
+      - name: Verify signed uninstaller and resume packaging
+        if: inputs.mode == 'signpath'
+        run: node scripts/signpath/control.cjs accept uninstaller
+      - name: Wait for installer
+        run: node scripts/signpath/control.cjs wait installer
+      - name: Upload installer for verified signing
+        if: inputs.mode == 'signpath'
+        id: upload-installer
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: sitioo-installer-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.SITIOO_SIGNING_DIR }}/installer/SITIOO-${{ env.SITIOO_VERSION }}-windows-x64-setup.exe
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 9
+      - name: Sign installer with manual Foundation policy
+        if: inputs.mode == 'signpath'
+        uses: signpath/github-action-submit-signing-request@f6d04783b4569d051e0c80105fe66e82819d0092 # v3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: release-signing
+          artifact-configuration-slug: installer
+          github-artifact-id: ${{ steps.upload-installer.outputs.artifact-id }}
+          parameters: |
+            version: "${{ env.SITIOO_VERSION }}"
+          wait-for-completion: true
+          wait-for-completion-timeout-in-seconds: 2400
+          output-artifact-directory: ${{ env.SITIOO_SIGNING_DIR }}/installer/signed
+      - name: Verify signed installer and resume packaging
+        if: inputs.mode == 'signpath'
+        run: node scripts/signpath/control.cjs accept installer
+      - name: Wait for completed installer
+        run: node scripts/signpath/control.cjs wait completed
+      - name: Verify packaged signatures, plugin integrity and unchanged third parties
+        run: node scripts/signpath/check-bundle.cjs
+      - name: Save small audit report
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: sitioo-verification-${{ github.run_id }}
+          path: ${{ env.SITIOO_SIGNING_DIR }}/verification.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Build log on failure
+        if: failure()
+        run: |
+          foreach ($name in @('build.stdout.log','build.stderr.log')) {
+            $log = Join-Path $env:SITIOO_SIGNING_DIR $name
+            if (Test-Path -LiteralPath $log) { Get-Content -LiteralPath $log -Tail 70 }
+          }
+      - name: Record outcome
+        if: success()
+        run: |
+          "SITIOO $env:SITIOO_VERSION · mode $env:SITIOO_SIGNING_MODE" >> $env:GITHUB_STEP_SUMMARY
+          "Build and integrity verification passed. Installation on Windows 11 is a separate test." >> $env:GITHUB_STEP_SUMMARY
+          "This workflow does not publish releases or replace public downloads." >> $env:GITHUB_STEP_SUMMARY

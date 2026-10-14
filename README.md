@@ -45,7 +45,7 @@ Los registros históricos de Mac corresponden a las versiones que indican. La pu
 
 ## Code signing policy
 
-Se está preparando la solicitud al programa gratuito de SignPath Foundation. El proyecto todavía no está aceptado y no se han emitido firmas para SITIOO. Consulta la [política de firma](docs/CODE-SIGNING-POLICY.md), la [información de privacidad](docs/PRIVACIDAD.md) y los [requisitos pendientes](docs/SIGNPATH.md).
+Se está preparando la solicitud al programa gratuito de SignPath Foundation. El proyecto todavía no está aceptado y no se han emitido firmas para SITIOO. El [proceso de compilación y firma](docs/COMPILACION-FIRMADA.md) incluye un ensayo sin certificado y una modalidad que exige firmas válidas. Consulta la [política de firma](docs/CODE-SIGNING-POLICY.md), la [información de privacidad](docs/PRIVACIDAD.md) y el [estado de la solicitud](docs/SIGNPATH.md).
 
 ## Colaborar
 

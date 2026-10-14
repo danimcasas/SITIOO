@@ -1,0 +1,5 @@
+# Import and enforce in SignPath after acceptance; this is not a locally enforced server policy.
+github-build-policies:
+  disallow_reruns: true
+  runners:
+    required_github_hosted: true

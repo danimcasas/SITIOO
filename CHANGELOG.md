@@ -1,5 +1,13 @@
 # Versiones de SITIOO
 
+## Preparación de firma gratuita — 2026-10-15
+
+- Proceso manual de Windows y SignPath con configuraciones separadas para auxiliar, aplicación, desinstalador e instalador. La activación real depende de la aceptación de SignPath.
+- Metadatos de producto y versión en el auxiliar Windows; reconstrucción independiente del auxiliar del plugin.
+- Rechazo de firmas ausentes, certificados inesperados y cambios en el contenido ejecutable. Componentes de terceros excluidos de la firma propia.
+- URL concreta y hash fijado del runtime Microsoft. Compatibilidad reconocida con el plugin beta.2 original al incorporar el auxiliar preparado para firma.
+- La beta descargable original se conserva. Estos cambios no anuncian una versión firmada ni una aceptación del programa.
+
 ## Publicación del código — 2026-10-15
 
 - Primera copia pública revisada de la beta 0.2.0-beta.2, con sus fuentes, pruebas, manuales y licencias.

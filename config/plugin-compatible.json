@@ -9,5 +9,22 @@
       "readme.txt": "39ba00872dfc710ae606508a546f9e745a4edb29b3c749ad77cc8dd4d91ddcae",
       "sitioo-migration.php": "036271e95b0558516112109f4d659e904f7c2f23d344f3b55303de159057f9f2"
     }
+  },
+  {
+    "version": "0.2.0-beta.2",
+    "files": {
+      "bin/sitioo-win.exe": "fe2daecc25a7a4c4f5f6f857db5213ae78ddd1a2b2a51b8e131428d88c5d09bf",
+      "includes/format.php": "dabe53b590d3cccb4f953597d2d8e6fcdc0907b51a2bedd60ff7aecd34c7b10b",
+      "includes/importer.php": "c80a8323001cad22f975212e34460f0c8d37e97eee7dc250278e93d5a51eabda",
+      "LICENSE": "b7e6599622766b996cc90f807d2aa2c474707e28565ec16870376bf0c06f963b",
+      "LICENSE.txt": "b7e6599622766b996cc90f807d2aa2c474707e28565ec16870376bf0c06f963b",
+      "migration.js": "a007efb663f3a4910e1b4918bdee6e6e26a6f0990c174995ec984d7d5ea57cf2",
+      "native/AVISOS.txt": "4ac652ad7e782ae2d0182ae902223c78c00b268075996fe7062f566676ff6142",
+      "native/build-native.ps1": "c7e2485d5340775e8fe96cf6f5f9b65f520bc530ac08d4f57d0579055a0cba62",
+      "native/MICROSOFT-RUNTIME-LICENSE.txt": "2dd434a15fb5f9d28c33211a5af471eb719acba5db65e5103e0db95e7869a2fb",
+      "native/sitioo-win.cpp": "e0828e929998c7efd1baa9f3ff8c7ac99c93b82729e40a280cb5419fc98e269c",
+      "readme.txt": "ea69f48185e39c51048d5b7335384ebfdda4955180c939d3790f10e7b7a108c0",
+      "sitioo-migration.php": "25f5c9b06549cd3b0da36c39caecc055cabce03461950c84f5af0d5bb91c9dcb"
+    }
   }
 ]

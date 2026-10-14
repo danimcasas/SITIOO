@@ -1,0 +1,11 @@
+const fs=require('node:fs');
+const path=require('node:path');
+const {execFileSync}=require('node:child_process');
+const c=require('./common.cjs');
+c.mode();
+const folder=path.join(c.workspace(),'native');
+fs.mkdirSync(folder);
+const target=path.join(folder,'sitioo-win.exe');
+fs.copyFileSync(path.join(c.root,'.local/native/sitioo-win.exe'),target,fs.constants.COPYFILE_EXCL);
+execFileSync('pwsh',['-NoProfile','-File',path.join(__dirname,'verify-file.ps1'),'-Path',target],{stdio:'inherit',windowsHide:true});
+c.writeNewJson(path.join(folder,'request.json'),{stage:'native',file:'sitioo-win.exe',sha256:c.sha256(target),version:c.version});
