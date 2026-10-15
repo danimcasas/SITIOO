@@ -15,7 +15,7 @@ La primera apertura muestra una guía de tres pasos para crear WordPress. No hay
 
 ## Estado de firma
 
-La beta Mac se ofrece en la [página oficial](https://danimcasas.com/sitioo-wordpress-local/) sin firma Developer ID ni notarización. La firma ad hoc utilizada durante la preparación de componentes no equivale a una identidad verificada de distribución. No se ha ejecutado una nueva validación de Mac al publicar este repositorio.
+La entrega Mac 0.3.0-beta.2 generada en esta revisión no tiene firma Developer ID ni notarización. La firma ad hoc utilizada durante la preparación de componentes no equivale a una identidad verificada de distribución. Las comprobaciones de la entrega Mac 0.3 se registran en PRUEBAS-MAC-0.3.md. No equivalen a una validación en un Mac limpio ni de Gatekeeper tras descargar desde Internet.
 
 Una cuenta Apple Developer no es por sí sola un certificado instalado. Para distribución fuera de la App Store hace falta un certificado **Developer ID Application**, su clave privada en el llavero y acceso al servicio de notarización.
 
@@ -33,7 +33,7 @@ El proceso preparado firma los binarios del motor y la aplicación, envía la ap
 
 ## Descarga sencilla desde la web
 
-La página oficial ya ofrece la descarga de la beta Mac e informa de sus requisitos y de la ausencia de notarización. Cualquier futura entrega firmada deberá comprobarse antes de sustituir su enlace y actualizar el estado anunciado.
+Para publicar esta entrega en la [página oficial](https://danimcasas.com/sitioo-wordpress-local/), primero hay que alojar y comprobar el archivo nuevo y después actualizar su enlace, versión y requisitos. La generación del DMG local no sustituye por sí sola la descarga de la web. Cualquier futura entrega firmada deberá comprobarse antes de actualizar el estado anunciado.
 
 La beta actual es para Apple Silicon con macOS 26 o posterior. La firma no amplía por sí sola esa compatibilidad.
 

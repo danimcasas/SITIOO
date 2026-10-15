@@ -1,5 +1,15 @@
 # Versiones de SITIOO
 
+## 0.3.0-beta.2 — 2026-10-15 — Mac
+
+- Selector nativo Mac de carpeta exportada para importar sin depender del filtro JSON del sistema. Validación del índice y los ZIP conservada.
+- Mac alineado con la serie 0.3: plugin instalado de serie, duplicación, recuperación de una copia como sitio nuevo e importación local.
+- WordPress 7.1.3 y traducción española fijados con SHA-256; versión del núcleo declarada en el manifiesto para comprobar importaciones antes de crear destinos.
+- Comunicación privada de MariaDB compatible con carpetas de proyectos largas, sin abrir la base de datos a la red; verificación de propietario y permisos de la carpeta de sockets.
+- Actualizador compatible con SITIOO Migration 0.3.0-beta.1, además de betas anteriores reconocidas; el formato de copias sigue siendo 1.
+- Preparación del motor Mac, pruebas de transferencia compartidas y documentación de uso Mac/Windows. No añade dependencias de Node.
+- DMG separado y conservado junto a los resultados de las pruebas Mac. La entrega Windows anterior permanece disponible. Firma Developer ID, notarización y Mac limpio pendientes.
+
 ## 0.3.0-beta.1 — 2026-10-15
 
 - Duplicar un proyecto: guarda una copia numerada del estado actual y crea un sitio independiente.

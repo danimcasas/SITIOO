@@ -3,6 +3,7 @@ contextBridge.exposeInMainWorld('sitioo',Object.freeze({
   transferSelect:()=>ipcRenderer.invoke('sitioo:transfer-select'),
   transferCreate:data=>ipcRenderer.invoke('sitioo:transfer-create',data),
   dataFolder:()=>ipcRenderer.invoke('sitioo:data-folder'),
+  manual:kind=>ipcRenderer.invoke('sitioo:manual',kind),
   pluginStatus:id=>ipcRenderer.invoke('sitioo:plugin-status',id),
   pluginInstall:id=>ipcRenderer.invoke('sitioo:plugin-install',id),
   backupsList:id=>ipcRenderer.invoke('sitioo:backups-list',id),

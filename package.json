@@ -1,6 +1,6 @@
 {
   "name": "sitioo",
-  "version": "0.3.0-beta.1",
+  "version": "0.3.0-beta.2",
   "private": true,
   "description": "Tu web empieza aquí. WordPress local para Windows y macOS.",
   "main": "apps/desktop/main.cjs",
@@ -16,13 +16,16 @@
     "test:windows": "node scripts/run-windows-tests.cjs",
     "test:migration:windows": "node scripts/test-migration-windows.cjs",
     "test:transfers:windows": "node scripts/run-transfers-tests.cjs",
-    "test:desktop:windows": "node scripts/test-desktop-transfers.cjs"
+    "test:desktop:windows": "node scripts/test-desktop-transfers.cjs",
+    "pretest": "node -e \"require('node:fs').mkdirSync('.local',{recursive:true})\"",
+    "prepare:mac": "python3 scripts/prepare-mac.py && node scripts/prepare-migration.cjs",
+    "test:mac": "node scripts/run-mac-tests.cjs"
   },
   "build": {
     "appId": "local.sitioo.desktop",
     "productName": "SITIOO",
     "directories": {
-      "output": "dist/0.3.0-beta.1"
+      "output": "dist/0.3.0-beta.2"
     },
     "files": [
       "apps/**/*",
@@ -35,6 +38,16 @@
       {
         "from": ".local/migration-assets",
         "to": "migration"
+      },
+      {
+        "from": "docs",
+        "to": "manuals",
+        "filter": [
+          "manual-app.html",
+          "manual-plugin.html",
+          "glosario-faq.html",
+          "manual.css"
+        ]
       }
     ],
     "mac": {

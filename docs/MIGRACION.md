@@ -1,4 +1,4 @@
-# Migración — SITIOO 0.3.0-beta.1
+# Migración — SITIOO 0.3.0-beta.2
 
 La guía de uso completa está en `manual-app.html` y `manual-plugin.html`.
 
@@ -6,7 +6,7 @@ SITIOO crea copias numeradas y exporta manifiesto y ZIP. SITIOO Migration import
 
 Se conserva FORMAT=1. El manifiesto, esquemas, filas codificadas y entradas ZIP mantienen el contrato de beta.1 para Mac. Los nombres de contenido se escriben siempre con `/`; las rutas absolutas de origen se conservan como datos para sustituirlas por la ruta del destino. No se exportan los secretos del motor, la bóveda de accesos, wp-config.php, el núcleo, mu-plugins, drop-ins ni el propio importador.
 
-Windows añade permisos ACL privados, comprobación de rutas reservadas y colisiones de mayúsculas. El plugin incluye su ayudante x64 y su fuente GPL. En Windows exige proc_open y mbstring; falla si no puede proteger la recuperación. Linux/macOS conservan su control de permisos 0700. La validación de contrato en Windows no equivale a ejecución física en Mac.
+Windows añade permisos ACL privados, comprobación de rutas reservadas y colisiones de mayúsculas. El plugin incluye su ayudante x64 y su fuente GPL. En Windows exige proc_open y mbstring; falla si no puede proteger la recuperación. Linux/macOS conservan su control de permisos 0700. Consulta PRUEBAS-MAC-0.3.md para los recorridos ejecutados en Mac; el intercambio físico entre equipos se registra por separado.
 
 El destino necesita WordPress igual o posterior al origen, PHP >=8.1, ZipArchive, InnoDB y permisos para crear/renombrar tablas. No se admite Multisite ni tablas de usuarios externas. Límites: suma de tamaños comprimidos y expandidos <20 GiB; archivos <=2 GiB; bloques <=4 MiB. Ver manual para espacio libre y límites de SQL/serialización. Estos límites no implican prueba de carga máxima.
 

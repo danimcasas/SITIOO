@@ -4,6 +4,12 @@
 
 Creado por **danimcasas.com e iNextalent.com**. El código de SITIOO se distribuye con licencia **GPL v2 o posterior**. Cada componente de terceros conserva su licencia y sus atribuciones.
 
+## Nueva entrega Mac
+
+El código actual prepara **SITIOO 0.3.0-beta.2 para Mac Apple Silicon con macOS 26 o posterior**, alineado con las funciones de Windows 0.3.0-beta.1. Incluye WordPress 7.1.3, PHP 8.5.9, MariaDB 11.4.13 y WP-CLI 2.12.0. SITIOO Migration viene instalado y activo en nuevos sitios. Los proyectos y las descargas anteriores se conservan.
+
+Consulta [preparación para Mac](docs/MACOS.md), [pruebas Mac](docs/PRUEBAS-MAC-0.3.md) y el [manual compartido](docs/manual-app.html). El motor se prepara con `npm run prepare:mac` y el DMG con `npm run dist:mac`. La entrega Mac no tiene firma Developer ID ni notarización. La versión Windows descrita a continuación es la publicada anteriormente; estas modificaciones no acreditan una nueva validación Windows.
+
 ## Estado de esta versión
 
 La [página oficial de SITIOO](https://danimcasas.com/sitioo-wordpress-local/) ofrece las descargas de Mac y Windows, el plugin independiente y los manuales.

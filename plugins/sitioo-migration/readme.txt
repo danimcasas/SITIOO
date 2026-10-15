@@ -3,7 +3,7 @@ Contributors: danimcasas
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 0.3.0-beta.1
+Stable tag: 0.3.0-beta.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,7 +19,7 @@ Instala y activa el ZIP desde Plugins. Abre Herramientas → SITIOO Migration y 
 WordPress individual. No importa wp-config.php, core, reglas del servidor, mu-plugins ni drop-ins. Los plugins importados quedan inactivos para revisión. Guarda los paquetes de forma privada; contienen datos y código. No elimines el plugin ni sus archivos temporales durante la migración. Para conservar recuperación fuera del directorio temporal, configura SITIOO_PRIVATE_DIR en wp-config.php con una carpeta privada persistente.
 
 == Cambios ==
-= 0.3.0-beta.1 =
+= 0.3.0-beta.2 =
 Incluido y activado en los sitios nuevos de SITIOO. Protección de carpetas privadas en Windows x64, comprobación de rutas incompatibles y conservación del formato de paquetes 1.
 
 = 0.2.0-beta.1 =

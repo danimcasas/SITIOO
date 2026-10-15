@@ -13,5 +13,11 @@ test('no incluye salida sensible de procesos en errores',async()=>{
 test('asigna un puerto local no privilegiado',async()=>{const port=await freePort();assert.ok(port>=1024&&port<=65535);});
 test('espera una comprobación real de disponibilidad',async()=>{let calls=0;await waitFor(async()=>++calls===2,1000);assert.equal(calls,2);});
 test('rechaza operaciones simultáneas',async()=>{const e=new LocalEngine('',{},()=>{});e.locked=true;await assert.rejects(e.exclusive(async()=>{}),/Espera/);});
-test('detecta rutas de socket demasiado largas antes de iniciar servicios',()=>{const e=new (require('../packages/engine/mac.cjs').LocalEngine)('',{root:'x'.repeat(120)},()=>{});assert.throws(()=>e.socket({id:'12345678'}),/demasiado larga/);});
+test('acorta sockets de rutas largas y mantiene perfiles independientes',()=>{
+  const MacEngine=require('../packages/engine/mac.cjs').LocalEngine;
+  const project={id:'12345678-1234-1234-1234-123456789012'};
+  const a=new MacEngine('',{root:'x'.repeat(120)},()=>{}),b=new MacEngine('',{root:'y'.repeat(120)},()=>{});
+  assert.ok(Buffer.byteLength(a.socket(project))<=100);
+  assert.equal(a.socket(project),a.socket(project));assert.notEqual(a.socket(project),b.socket(project));
+});
 

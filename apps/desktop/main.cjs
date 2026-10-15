@@ -34,6 +34,14 @@ app.whenReady().then(async()=>{
   });
   handle('info',()=>({...brand,ready,platform:process.platform}));handle('list',()=>engine.list());
   handle('data-folder',()=>shell.openPath(app.getPath('userData')));
+  handle('manual',async kind=>{
+    const files={app:'manual-app.html',plugin:'manual-plugin.html',faq:'glosario-faq.html'};
+    if(!Object.hasOwn(files,kind))throw new Error('Manual no válido.');
+    const directory=app.isPackaged?path.join(process.resourcesPath,'manuals'):path.resolve(__dirname,'../../docs');
+    const failure=await shell.openPath(path.join(directory,files[kind]));
+    if(failure)throw new Error('No se pudo abrir el manual. Puedes consultarlo en la carpeta de documentación de la entrega.');
+    return true;
+  });
   handle('create',async data=>{
     if(!ready)throw new Error('Faltan componentes del motor.');
     if(data?.saveAccess!==undefined&&typeof data.saveAccess!=='boolean')throw new Error('Opción de guardado no válida.');
@@ -46,9 +54,13 @@ app.whenReady().then(async()=>{
   });
   handle('access-status',id=>vault.status(id));
   handle('transfer-select',async()=>{
-    const chosen=await dialog.showOpenDialog(window,{title:'Selecciona el índice de la copia de SITIOO',properties:['openFile'],filters:[{name:'Índice de SITIOO (sitioo-manifest.json)',extensions:['json']}]});
+    const mac=process.platform==='darwin';
+    const chosen=await dialog.showOpenDialog(window,mac?
+      {title:'Selecciona la carpeta exportada de SITIOO',properties:['openDirectory']}:
+      {title:'Selecciona el índice de la copia de SITIOO',properties:['openFile'],filters:[{name:'Índice de SITIOO (sitioo-manifest.json)',extensions:['json']}]});
     if(chosen.canceled)return null;
-    const file=chosen.filePaths[0],preview=await transfers.inspect(file),token=require('node:crypto').randomUUID();
+    const file=mac?path.join(chosen.filePaths[0],'sitioo-manifest.json'):chosen.filePaths[0];
+    const preview=await transfers.inspect(file),token=require('node:crypto').randomUUID();
     selectedImport={file,hash:preview.hash,token};
     const {hash,...summary}=preview;return {...summary,token};
   });

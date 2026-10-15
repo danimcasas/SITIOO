@@ -9,11 +9,11 @@ if(!process.versions.electron){
  const {app,BrowserWindow,dialog}=require('electron'),fs=require('node:fs/promises'),path=require('node:path'),assert=require('node:assert/strict'),crypto=require('node:crypto');
  const sync=require('node:fs'),dirs=sync.readdirSync(path.resolve('.local')).filter(n=>n.startsWith('Transferencias ficticias á ')).sort();
  if(!dirs.length)throw new Error('Ejecuta primero test:transfers:windows.');
- const profile=path.resolve('.local',dirs.at(-1)),output=path.resolve('../../pruebas/0.3.0-beta.1');
+ const profile=path.resolve('.local',dirs.at(-1)),output=path.resolve(process.env.SITIOO_TEST_REPORT_DIR||(process.platform==='darwin'?'.local/mac-evidence':'../../pruebas/0.3.0-beta.1'));
  process.env.SITIOO_DATA_DIR=profile;
  const exported=sync.readdirSync(profile).find(n=>n.startsWith('SITIOO-copia-'));
  if(!exported)throw new Error('No se encuentra la exportación ficticia.');
- dialog.showOpenDialog=async()=>({canceled:false,filePaths:[path.join(profile,exported,'sitioo-manifest.json')]});
+ dialog.showOpenDialog=async()=>({canceled:false,filePaths:[process.platform==='darwin'?path.join(profile,exported):path.join(profile,exported,'sitioo-manifest.json')]});
  const errors=[],results=[],pwd=crypto.randomBytes(24).toString('hex');
  let window;
  app.on('browser-window-created',(_,w)=>{window=w;w.webContents.on('console-message',(_event,level,message)=>{if(level===3)errors.push(message);});});
@@ -57,7 +57,7 @@ if(!process.versions.electron){
   const store=JSON.parse(await fs.readFile(path.join(profile,'projects/projects.json')));assert.equal(store.length,countBefore+3);
   assert.equal(errors.length,0,'Errores del renderer');
   window.setSize(760,680);await pause(300);await screenshot('interfaz-compacta-0.3');
-  await fs.writeFile(path.join(output,'interfaz-'+Date.now()+'.json'),JSON.stringify({version:require('../package.json').version,environment:'Electron real, renderer aislado y canal IPC real, perfil ficticio Windows 11',results,errors:errors.length,nativePicker:'Selección controlada de un manifiesto ficticio; interacción manual con el diálogo no incluida'},null,2));
+  await fs.writeFile(path.join(output,'interfaz-'+Date.now()+'.json'),JSON.stringify({version:require('../package.json').version,environment:'Electron real, renderer aislado y canal IPC real, perfil ficticio '+process.platform,results,errors:errors.length,nativePicker:'Selección controlada de un manifiesto ficticio; interacción manual con el diálogo no incluida'},null,2));
   console.log('INTERFAZ SUPERADA');app.quit();
  }).catch(async error=>{console.error(error.message);try{await fs.writeFile(path.join(output,'interfaz-fallo-'+Date.now()+'.json'),JSON.stringify({status:'fallida',message:error.message},null,2));}finally{app.exit(1);}});
 }

@@ -1,16 +1,17 @@
 'use strict';
-// Run in Electron on the actual Windows host; only synthetic sites are created.
+// Run in Electron on the actual Mac or Windows host; only synthetic sites are created.
 const {app,safeStorage}=require('electron'),fs=require('node:fs/promises'),path=require('node:path'),crypto=require('node:crypto'),assert=require('node:assert/strict');
 const {Store}=require('../packages/projects/store.cjs'),{LocalEngine}=require('../packages/engine/local.cjs');
 const {PluginManager}=require('../packages/migration/plugin-manager.cjs'),{Backups}=require('../packages/backups/manager.cjs');
 const {ProjectTransfers}=require('../packages/projects/transfers.cjs'),{AccessVault}=require('../packages/access/vault.cjs');
-const profile=path.resolve('.local/Transferencias ficticias á '+Date.now()),report=path.resolve('../../pruebas/0.3.0-beta.1/transferencias-'+Date.now()+'.json');
+const isMac=process.platform==='darwin';
+const profile=path.resolve('.local/Transferencias ficticias á '+Date.now()),report=path.join(path.resolve(process.env.SITIOO_TEST_REPORT_DIR||(isMac?'.local/mac-evidence':'../../pruebas/0.3.0-beta.1')),'transferencias-'+Date.now()+'.json');
 require('node:fs').mkdirSync(profile,{recursive:true});app.setPath('userData',path.join(profile,'electron'));
 const checks=[],record=(name)=>{checks.push({name,status:'superada'});console.log('PASS '+name);};
 let engine,source,sourceVault,sourceSecret,sourceAccess;
-const password=()=>crypto.randomBytes(24).toString('hex'),assets=path.resolve('.local/migration-assets');
+const password=()=>crypto.randomBytes(24).toString('hex'),assets=path.resolve(process.env.SITIOO_MIGRATION_ASSETS||'.local/migration-assets');
 const sourcePassword=password(),targetPassword=password(),ids=[];
-function setup(store){engine=new LocalEngine(path.resolve('.local/engine-windows-x64'),store,()=>{});new PluginManager(engine,assets);return engine;}
+function setup(store){engine=new LocalEngine(path.resolve(process.env.SITIOO_ENGINE||(isMac?'.local/engine':'.local/engine-windows-x64')),store,()=>{});new PluginManager(engine,assets);return engine;}
 const wp=(p,args,input)=>engine.wp(path.join(engine.store.directory(p.id),'wordpress'),['--skip-plugins','--skip-themes',...args],input);
 const value=async(p,key)=>(await wp(p,['option','get',key])).stdout.trim();
 async function login(p,username,pwd){
@@ -20,15 +21,15 @@ async function login(p,username,pwd){
  assert.ok(cookies.includes('wordpress_logged_in_'));assert.equal((await fetch(url+'/wp-admin/',{headers:{Cookie:cookies},redirect:'manual'})).status,200);
 }
 app.whenReady().then(async()=>{
- assert.equal(process.platform,'win32');const store=new Store(path.join(profile,'projects'));await store.load();setup(store);assert.equal(await engine.init(),true);
+ assert.ok(['darwin','win32'].includes(process.platform));const store=new Store(path.join(profile,'projects'));await store.load();setup(store);assert.equal(await engine.init(),true);
  const backups=new Backups(path.join(profile,'backups'),engine,assets,()=>{}),transfers=new ProjectTransfers(path.join(profile,'transfers'),engine,backups,assets,()=>{});
- const vault=new AccessVault(path.join(profile,'access'),store,safeStorage,d=>engine.native.secureDirectory(d));
+ const vault=new AccessVault(path.join(profile,'access'),store,safeStorage,engine.native?d=>engine.native.secureDirectory(d):undefined);
  try{
-  console.log('Preparando origen ficticio en Windows…');
+  console.log('Preparando origen ficticio en el sistema actual…');
   await engine.create({name:'Origen ficticio á',type:'wordpress',admin:'source_admin',password:sourcePassword});source=store.items.at(-1);ids.push(source.id);
   assert.equal(await value(source,'home'),'http://127.0.0.1:'+source.port);
   assert.equal(await value(source,'siteurl'),'http://127.0.0.1:'+source.port);
-  await vault.save(source.id,'source_admin',sourcePassword);sourceVault=await fs.readFile(vault.file(source.id));sourceSecret=await fs.readFile(engine.secretFile(source));
+  await vault.save(source.id,'source_admin',sourcePassword);sourceVault=await fs.readFile(vault.file(source.id));sourceSecret=await fs.readFile(engine.secretFile?engine.secretFile(source):path.join(store.directory(source.id),'wordpress/wp-config.php'));
   const web=path.join(store.directory(source.id),'wordpress'),upload=path.join(web,'wp-content/uploads/prueba.txt');
   await fs.mkdir(path.dirname(upload),{recursive:true});await fs.writeFile(upload,'Estado uno');
   const plugin=path.join(web,'wp-content/plugins/fixture-plugin');await fs.mkdir(plugin);
@@ -41,7 +42,7 @@ app.whenReady().then(async()=>{
   async function transfer(request,name,expected){
     const result=await transfers.run(request,{name,type:'wordpress',admin:'new_admin',password:targetPassword});
     const p=store.get(result.projectId);ids.push(p.id);
-    assert.equal(engine.active.has(p.id),false);assert.equal(p.status,'stopped');assert.notEqual(p.id,source.id);assert.notEqual(p.port,source.port);assert.notEqual(p.dbPort,source.dbPort);
+    assert.equal(engine.active.has(p.id),false);assert.equal(p.status,'stopped');assert.notEqual(p.id,source.id);assert.notEqual(p.port,source.port);if(engine.native)assert.notEqual(p.dbPort,source.dbPort);else assert.notEqual(engine.socket(p),engine.socket(source));
     await vault.save(p.id,'new_admin',targetPassword);const saved=await fs.readFile(vault.file(p.id));assert.equal(saved.includes(Buffer.from(targetPassword)),false);
     await engine.start(p.id);assert.equal(await value(p,'sitioo_test_marker'),expected);
     assert.equal(await value(p,'home'),'http://127.0.0.1:'+p.port);
@@ -67,18 +68,19 @@ app.whenReady().then(async()=>{
   record('Importación desde carpeta con espacios y acentos: paquetes verificados, enlaces serializados y acceso funcional');
   await engine.start(duplicate.id);await wp(duplicate,['option','update','sitioo_test_marker','solo_duplicado']);await engine.stop(duplicate.id);
   await engine.start(source.id);assert.equal(await value(source,'sitioo_test_marker'),'estado_dos');
-  assert.deepEqual(await fs.readFile(vault.file(source.id)),sourceVault);assert.deepEqual(await fs.readFile(engine.secretFile(source)),sourceSecret);assert.deepEqual(await vault.read(source.id),sourceAccess);
+  assert.deepEqual(await fs.readFile(vault.file(source.id)),sourceVault);assert.deepEqual(await fs.readFile(engine.secretFile?engine.secretFile(source):path.join(store.directory(source.id),'wordpress/wp-config.php')),sourceSecret);assert.deepEqual(await vault.read(source.id),sourceAccess);
   record('Cambios en el duplicado sin interferencia con datos ni accesos cifrados del original');
   // A real export from the preserved beta.2 adapter checks backwards format compatibility.
-  const legacyAssets=path.resolve('../SITIOO-signpath-2026-10-15/.local/migration-assets');
+  const legacyAssets=path.resolve(process.env.SITIOO_LEGACY_ASSETS||'../SITIOO-signpath-2026-10-15/.local/migration-assets');
+  const legacyVersion=process.env.SITIOO_LEGACY_VERSION||'0.2.0-beta.2';
   if(require('node:fs').existsSync(legacyAssets)){
-    console.log('Comprobando formato anterior 0.2.0-beta.2…');
+    console.log('Comprobando formato anterior '+legacyVersion+'…');
     const legacyBackups=new Backups(path.join(profile,'legacy-backups'),engine,legacyAssets,()=>{});
     await legacyBackups.create(source.id,'Copia ficticia con exportador anterior');
     const legacyManifest=path.join(legacyBackups.directory(source.id),'v000001/sitioo-manifest.json');
-    assert.equal(JSON.parse(await fs.readFile(legacyManifest)).appVersion,'0.2.0-beta.2');
+    assert.equal(JSON.parse(await fs.readFile(legacyManifest)).appVersion,legacyVersion);
     await transfer({kind:'import',manifestPath:legacyManifest},'Importado de beta anterior','estado_dos');
-    record('Importación de formato 1 generado por el exportador real 0.2.0-beta.2');
+    record('Importación de formato 1 generado por el exportador real '+legacyVersion);
   }else checks.push({name:'Exportador real anterior',status:'pendiente',reason:'No se encuentra la carpeta preservada de la beta anterior.'});
   const corrupt=path.join(profile,'Paquete dañado');await fs.cp(exported,corrupt,{recursive:true});
   const m=JSON.parse(await fs.readFile(path.join(corrupt,'sitioo-manifest.json'))),first=m.packages[0],bad=path.join(corrupt,first.name);
@@ -93,13 +95,13 @@ app.whenReady().then(async()=>{
   record('ZIP inválido conserva el destino incompleto, detiene sus procesos y mantiene utilizable el origen');
   await engine.close();assert.equal(engine.active.size,0);
   const reloaded=new Store(store.root);await reloaded.load();setup(reloaded);assert.equal(await engine.init(),true);
-  const reopenedVault=new AccessVault(path.join(profile,'access'),reloaded,safeStorage,d=>engine.native.secureDirectory(d));
+  const reopenedVault=new AccessVault(path.join(profile,'access'),reloaded,safeStorage,engine.native?d=>engine.native.secureDirectory(d):undefined);
   for(const id of ids){const p=reloaded.get(id),saved=await reopenedVault.read(id);await engine.start(id);await login(p,saved.username,saved.password);await engine.stop(id);}
   assert.equal(engine.active.size,0);
   record('Cierre y reapertura del motor con persistencia de proyectos, datos y accesos cifrados; todos los administradores accesibles');
   record('Inicio y parada de proyectos sin servidores gestionados pendientes');
  }finally{await engine.close();}
- await fs.mkdir(path.dirname(report),{recursive:true});await fs.writeFile(report,JSON.stringify({version:require('../package.json').version,platform:process.platform,arch:process.arch,windows:require('node:os').release(),date:new Date().toISOString(),environment:'PC Windows 11 actual; datos ficticios; sin reiniciar Windows',checks},null,2));
+ await fs.mkdir(path.dirname(report),{recursive:true});await fs.writeFile(report,JSON.stringify({version:require('../package.json').version,platform:process.platform,arch:process.arch,os:require('node:os').release(),date:new Date().toISOString(),environment:isMac?'Mac Apple Silicon actual; datos ficticios; sin reiniciar macOS':'PC Windows 11 actual; datos ficticios; sin reiniciar Windows',checks},null,2));
  console.log('TRANSFERENCIAS SUPERADAS: '+checks.filter(x=>x.status==='superada').length);app.exit(0);
 }).catch(async e=>{
  checks.push({name:'Ejecución de transferencias',status:'fallida',reason:e.message.replaceAll(profile,'[perfil de pruebas]')});console.error(e.stack);

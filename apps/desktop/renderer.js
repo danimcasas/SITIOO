@@ -74,3 +74,5 @@ $('backup-plugin').onclick=()=>call(async()=>{if(await window.sitioo.migrationPl
 
 
 $('data-folder').onclick=()=>call(()=>window.sitioo.dataFolder());
+
+for(const [id,kind] of [['manual-app','app'],['manual-plugin','plugin'],['manual-faq','faq']])$(id).onclick=()=>call(()=>window.sitioo.manual(kind));
