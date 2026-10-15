@@ -1,6 +1,6 @@
 # Pruebas y límites de SITIOO 0.3.0-beta.1
 
-Fecha: 15 de octubre de 2026. Desarrollo y pruebas en el PC Windows autorizado, con sitios y datos ficticios. Esta entrega se prepara localmente; no sustituye automáticamente la descarga pública anterior.
+Fecha: 15 de octubre de 2026. Desarrollo y pruebas en el PC Windows autorizado, con sitios y datos ficticios. Este informe documenta la validación local del instalador distribuido en [0.3.0-beta.1](https://github.com/danimcasas/SITIOO/releases/tag/v0.3.0-beta.1). Se conserva la descarga anterior.
 
 ## Entorno
 
@@ -67,6 +67,6 @@ Las capturas se revisaron visualmente. Los manuales se comprobaron a 1050 y 420 
 - Se admite el formato 1 de SITIOO, con WordPress individual y una versión igual o anterior a la incluida. Multisite, vistas, restricciones especiales, enlaces simbólicos y otros formatos de copia siguen fuera del alcance.
 - No se han probado todos los temas, plugins, hostings ni los tamaños máximos del formato.
 - El instalador está **sin firma digital**. SignPath sigue pendiente; esta compilación utiliza el modo explícito de ensayo y no solicita firmas ni servicios de pago.
-- La publicación de esta versión, la subida de entregables y la actualización de la landing no se han realizado.
+- La publicación y sus enlaces se verifican por separado de estas pruebas de funcionamiento. Los resultados anteriores corresponden al instalador sin modificar, preparado el 15 de octubre de 2026.
 
 Autoría: danimcasas.com e iNextalent.com. GPL v2 o posterior; licencias de terceros conservadas.

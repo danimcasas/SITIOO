@@ -8,11 +8,11 @@ Creado por **danimcasas.com e iNextalent.com**. El código de SITIOO se distribu
 
 La [página oficial de SITIOO](https://danimcasas.com/sitioo-wordpress-local/) ofrece las descargas de Mac y Windows, el plugin independiente y los manuales.
 
-Esta copia de desarrollo local prepara **0.3.0-beta.1 para Windows 11 x64**. Incluye un instalador guiado por usuario y los componentes necesarios: Electron 44.7.0, PHP 8.4.26, MariaDB 11.4.13, WordPress 7.1.3, WP-CLI 2.12.0 y SITIOO Migration 0.3.0-beta.1. El usuario final no necesita instalar Node.js, PHP o MariaDB por separado.
+**SITIOO 0.3.0-beta.1 para Windows 11 x64** incluye un instalador guiado por usuario y los componentes necesarios: Electron 44.7.0, PHP 8.4.26, MariaDB 11.4.13, WordPress 7.1.3, WP-CLI 2.12.0 y SITIOO Migration 0.3.0-beta.1. El usuario final no necesita instalar Node.js, PHP o MariaDB por separado.
 
 **El instalador Windows actual no tiene firma digital.** Está probado en un PC Windows 11; las pruebas en Windows limpio, después de reiniciar Windows y de intercambio con un Mac físico siguen pendientes. Consulta el [informe de pruebas](docs/PRUEBAS-0.3.0-beta.1.md) antes de usar la beta con un proyecto importante.
 
-La entrega 0.3.0-beta.1 se prepara localmente para revisión. La descarga pública anterior se conserva hasta que se autorice publicar esta versión. Los motores y los datos de proyectos quedan fuera del historial de código.
+La [descarga de 0.3.0-beta.1 en GitHub](https://github.com/danimcasas/SITIOO/releases/tag/v0.3.0-beta.1) reúne el instalador, el plugin, los manuales, las fuentes y los resultados de las pruebas. Se conserva la [versión anterior 0.2.0-beta.2](https://drive.google.com/drive/folders/1McVHHVZ9iR8Lze_AZVtlqkvhtNwv3dp_). Los motores y los datos de proyectos quedan fuera del historial de código.
 
 ## Funciones
 

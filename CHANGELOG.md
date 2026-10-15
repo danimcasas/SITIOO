@@ -10,7 +10,7 @@
 - Los intentos incompletos conservan los archivos para diagnóstico y no sustituyen proyectos existentes.
 - Dirección local de WordPress fijada explícitamente tras la instalación para evitar que el cálculo de URL de la consola incorpore una ruta larga de Windows.
 - Manuales, pruebas automatizadas y pruebas reales de las nuevas operaciones en Windows. No añade dependencias. Instalador sin firma digital.
-- Desarrollo y entrega locales; publicación de esta versión pendiente de autorización.
+- Distribución de la beta en GitHub, con instalador, plugin, manuales, fuentes y resultados de pruebas. La versión anterior 0.2.0-beta.2 se conserva.
 
 ## Preparación de firma gratuita — 2026-10-15
 
