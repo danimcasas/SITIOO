@@ -10,9 +10,24 @@ async function main() {
   if (command === 'wait') {
     const target = stage === 'completed' ? path.join(c.workspace(), 'completed.json') : path.join(c.workspace(), stage, 'request.json');
     const deadline = Date.now() + 30 * 60 * 1000;
+    let nextProgress = 0;
     while (!fs.existsSync(target)) {
       if (fs.existsSync(path.join(c.workspace(), 'failed.json'))) throw new Error('Packaging failed; inspect build log.');
+      const pidFile = path.join(c.workspace(), 'build.pid');
+      if (fs.existsSync(pidFile)) {
+        const pid = Number(fs.readFileSync(pidFile, 'utf8').trim());
+        if (!Number.isSafeInteger(pid) || pid <= 0) throw new Error('Invalid packager process identifier.');
+        try { process.kill(pid, 0); } catch { throw new Error(`Packager stopped before ${stage}; inspect build log.`); }
+      }
       if (Date.now() > deadline) throw new Error(`Timed out waiting for ${stage}.`);
+      if (Date.now() >= nextProgress) {
+        console.log(`Waiting for ${stage}.`);
+        for (const name of ['build.stdout.log', 'build.stderr.log']) {
+          const file = path.join(c.workspace(), name);
+          if (fs.existsSync(file)) console.log(fs.readFileSync(file, 'utf8').trim().split(/\r?\n/).slice(-3).join('\n'));
+        }
+        nextProgress = Date.now() + 60000;
+      }
       await delay(2000);
     }
     console.log(`Stage ready: ${stage}`);

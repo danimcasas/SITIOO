@@ -14,6 +14,8 @@ Actualizado el 15 de octubre de 2026. El repositorio [danimcasas/SITIOO](https:/
 
 La [guía de compilación y firma](COMPILACION-FIRMADA.md) describe los pasos, variables, restricciones y separación entre ensayo y producción. Los ensayos prueban la preparación técnica; no prueban una firma real de un servicio todavía no habilitado.
 
+El [informe de verificación](PRUEBAS-FIRMA.md) distingue las pruebas locales, la construcción pública y las comprobaciones que requieren un certificado real.
+
 ## Datos para la revisión de SignPath
 
 SITIOO utiliza GPL v2 o posterior. Existe una beta distribuible, una [página de descarga](https://danimcasas.com/sitioo-wordpress-local/) y código revisable con documentación. La publicación inicial del repositorio no acredita una comunidad ni un número de descargas. No se aportan cifras de adopción ni reseñas independientes sin verificar.
