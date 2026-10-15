@@ -2,7 +2,7 @@
 /**
  * Plugin Name: SITIOO Migration
  * Description: Importa las copias numeradas de SITIOO y adapta sus direcciones al hosting de destino.
- * Version: 0.3.0-beta.1
+ * Version: 0.3.0-beta.2
  * Requires at least: 6.0
  * Requires PHP: 8.1
  * Author: danimcasas.com e iNextalent.com
@@ -19,7 +19,7 @@ function sitioo_migration_page(){
     wp_localize_script('sitioo-migration','sitiooMigration',['url'=>admin_url('admin-ajax.php'),'nonce'=>wp_create_nonce('sitioo-migrate'),'chunk'=>max(16384,min(524288,(int)(wp_max_upload_size()/4)))]);
     ?>
     <style>#sitioo-confirm[hidden],#sitioo-rollback[hidden],#sitioo-done[hidden]{display:none!important}</style>
-    <div class="wrap" style="max-width:900px"><h1>SITIOO Migration <small>0.3.0-beta.1</small></h1>
+    <div class="wrap" style="max-width:900px"><h1>SITIOO Migration <small>0.3.0-beta.2</small></h1>
     <p>Creado por <a href="https://danimcasas.com" target="_blank" rel="noopener">danimcasas.com</a> e <a href="https://iNextalent.com" target="_blank" rel="noopener">iNextalent.com</a>. Software libre · GPL v2 o posterior.</p>
     <p>1. En SITIOO exporta una copia. 2. Selecciona <strong>sitioo-manifest.json y todos sus ZIP de datos</strong>. 3. Comprueba el destino y confirma la importación.</p>
     <p>Solo utiliza copias creadas por ti o de confianza: contienen código de plugins, datos privados y cuentas de WordPress. El administrador con el que has entrado en este hosting se conserva.</p>

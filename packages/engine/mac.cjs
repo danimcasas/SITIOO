@@ -1,8 +1,9 @@
  'use strict';
 const fs = require('node:fs/promises');
 const path = require('node:path');
+const os = require('node:os');
 const {spawn} = require('node:child_process');
-const {randomBytes} = require('node:crypto');
+const {randomBytes,createHash} = require('node:crypto');
 const {run,freePort,waitFor,stop} = require('./process.cjs');
 const {validateInput} = require('../projects/store.cjs');
 const salt = () => randomBytes(32).toString('hex');
@@ -34,14 +35,21 @@ class LocalEngine {
     child.on('error',()=>{});return child;
   }
   socket(project) {
-    const socket=path.join(this.store.root,'.sockets',project.id.slice(0,8)+'.sock');
-    if(Buffer.byteLength(socket)>100)throw new Error('La carpeta de proyectos es demasiado larga para iniciar la base de datos.');
+    let socket=path.join(this.store.root,'.sockets',project.id.slice(0,8)+'.sock');
+    if(Buffer.byteLength(socket)>100){
+      const namespace=createHash('sha256').update(path.resolve(this.store.root)).digest('hex').slice(0,12);
+      socket=path.join(os.tmpdir(),'sitioo-'+namespace,project.id.replaceAll('-','').slice(0,16)+'.sock');
+    }
+    if(Buffer.byteLength(socket)>100)throw new Error('La carpeta temporal es demasiado larga para iniciar la base de datos.');
     return socket;
   }
   async database(project) {
     const dir=this.store.directory(project.id);
     const socket=this.socket(project);
     await fs.mkdir(path.dirname(socket),{recursive:true,mode:0o700});
+    const socketDir=await fs.lstat(path.dirname(socket));
+    if(socketDir.isSymbolicLink()||!socketDir.isDirectory()||socketDir.uid!==process.getuid()||(socketDir.mode&0o077)!==0)
+      throw new Error('La carpeta de comunicación de la base de datos no tiene permisos privados.');
     const child=this.launch(this.manifest.database,['--no-defaults','--basedir='+path.dirname(path.dirname(this.manifest.database)),'--datadir='+path.join(dir,'database'),'--socket='+socket,'--pid-file='+path.join(dir,'db.pid'),'--skip-networking','--log-error='+path.join(dir,'database.log')]);
     this.active.set(project.id,{db:child});
     await waitFor(async()=>{try{await this.sql(socket,'SELECT 1;');return true;}catch{return false;}});
