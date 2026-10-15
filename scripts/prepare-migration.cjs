@@ -3,7 +3,7 @@ const fs=require('node:fs/promises');const path=require('node:path');const {run}
  const root=path.resolve('.local/migration-assets');await fs.mkdir(root,{recursive:true});
  const plugin=path.resolve('plugins/sitioo-migration');
  await fs.cp(plugin,path.join(root,'sitioo-migration'),{recursive:true});
- await fs.copyFile('packages/backups/export.php',path.join(root,'export.php'));await fs.copyFile('docs/MIGRACION.md',path.join(root,'MIGRACION.md'));
+ await fs.copyFile('packages/backups/export.php',path.join(root,'export.php'));await fs.copyFile('packages/backups/local-import.php',path.join(root,'local-import.php'));await fs.copyFile('docs/MIGRACION.md',path.join(root,'MIGRACION.md'));
  const compatible=JSON.parse(await fs.readFile('config/plugin-compatible.json','utf8'));
  await fs.writeFile(path.join(root,'plugin-manifest.json'),JSON.stringify({version:require('../package.json').version,files:await hashes(plugin),compatible},null,2));
  const win=process.platform==='win32',engine=path.resolve(win?'.local/engine-windows-x64':'.local/engine');

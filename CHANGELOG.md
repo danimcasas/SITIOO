@@ -1,5 +1,17 @@
 # Versiones de SITIOO
 
+## 0.3.0-beta.1 — 2026-10-15
+
+- Duplicar un proyecto: guarda una copia numerada del estado actual y crea un sitio independiente.
+- Recuperar una copia del historial como un proyecto nuevo, conservando las versiones y el sitio original.
+- Importar una exportación desde SITIOO seleccionando su índice junto a todos los paquetes ZIP.
+- Comprobación de tamaño e integridad antes de crear el destino; validación del contenido con el importador compartido de formato 1.
+- Administrador nuevo elegido por el usuario y acceso opcional cifrado. El destino queda detenido; SITIOO Migration activo y los otros plugins inactivos para revisión.
+- Los intentos incompletos conservan los archivos para diagnóstico y no sustituyen proyectos existentes.
+- Dirección local de WordPress fijada explícitamente tras la instalación para evitar que el cálculo de URL de la consola incorpore una ruta larga de Windows.
+- Manuales, pruebas automatizadas y pruebas reales de las nuevas operaciones en Windows. No añade dependencias. Instalador sin firma digital.
+- Desarrollo y entrega locales; publicación de esta versión pendiente de autorización.
+
 ## Preparación de firma gratuita — 2026-10-15
 
 - Proceso manual de Windows y SignPath con configuraciones separadas para auxiliar, aplicación, desinstalador e instalador. La activación real depende de la aceptación de SignPath.

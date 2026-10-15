@@ -68,7 +68,7 @@ max_execution_time=120
 [IO.File]::WriteAllText((Join-Path $engine 'php.ini'), $phpIni, [Text.UTF8Encoding]::new($false))
 [IO.Directory]::CreateDirectory((Join-Path $engine 'empty-ini')) | Out-Null
 [IO.File]::WriteAllText((Join-Path $engine 'wp-cli.yml'), "color: false`n")
-$manifest = [ordered]@{platform='win32';arch='x64';version='0.2.0-beta.2';php='php/php.exe';database='mariadb/mariadb-11.4.13-winx64/bin/mariadbd.exe';client='mariadb/mariadb-11.4.13-winx64/bin/mariadb.exe';installDb='mariadb/mariadb-11.4.13-winx64/bin/mariadb-install-db.exe';wpCli='wp-cli.phar';wordpress='wordpress-base/wordpress';helper='bin/sitioo-win.exe';phpVersion='8.4.26';mariaDbVersion='11.4.13';wordpressVersion='7.1.3';wpCliVersion='2.12.0'}
+$manifest = [ordered]@{platform='win32';arch='x64';version='0.3.0-beta.1';php='php/php.exe';database='mariadb/mariadb-11.4.13-winx64/bin/mariadbd.exe';client='mariadb/mariadb-11.4.13-winx64/bin/mariadb.exe';installDb='mariadb/mariadb-11.4.13-winx64/bin/mariadb-install-db.exe';wpCli='wp-cli.phar';wordpress='wordpress-base/wordpress';helper='bin/sitioo-win.exe';phpVersion='8.4.26';mariaDbVersion='11.4.13';wordpressVersion='7.1.3';wpCliVersion='2.12.0'}
 [IO.File]::WriteAllText((Join-Path $engine 'manifest.json'), ($manifest | ConvertTo-Json), [Text.UTF8Encoding]::new($false))
 $env:SITIOO_PHP_EXT = Join-Path $engine 'php\ext'
 $env:SITIOO_CA_FILE = Join-Path $engine 'cacert.pem'

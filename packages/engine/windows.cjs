@@ -53,7 +53,10 @@ class LocalEngine {
   }
   launchPhp(p,port,token){const web=path.join(this.store.directory(p.id),'wordpress');return this.launch(this.manifest.php,[...this.phpArgs(),'-S','127.0.0.1:'+port,'-t',web,path.join(this.root,'router.php')],{...this.env(p),SITIOO_HEALTH_TOKEN:token});}
   async http(p){const pool=new PhpPool(this,p);this.active.get(p.id).http=pool;await pool.start();}
-  async create(input){return this.exclusive(async()=>{
+  async create(input){return this.exclusive(()=>this.createLocked(input));}
+  // Internal orchestration hook: never exposed through IPC. The caller owns the lock.
+  async createLocked(input,options={}){
+    if(!this.locked)throw new Error('La creación requiere una operación exclusiva.');
     if(!this.manifest)throw new Error('Faltan los componentes del motor.');const data=validateInput(input);
     if(data.type!=='wordpress')throw new Error('WooCommerce todavía no está disponible en esta beta.');
     if(typeof input.admin!=='string'||!/^[A-Za-z0-9_.-]{3,32}$/.test(input.admin))throw new Error('Utiliza un usuario de 3 a 32 letras, números, puntos o guiones.');
@@ -80,11 +83,17 @@ class LocalEngine {
       await fs.mkdir(path.join(web,'wp-content','mu-plugins'),{recursive:true});await fs.writeFile(path.join(web,'wp-content','mu-plugins','sitioo-local-mail.php'),"<?php\n// Local beta: prevent standard WordPress email leaving this computer.\nadd_filter('pre_wp_mail','__return_true');\n",{flag:'wx'});
       update('Instalando WordPress y tu administrador…');
       await this.wp(web,['core','install','--url=http://127.0.0.1:'+p.port,'--title='+p.name,'--admin_user='+input.admin,'--admin_email=admin@example.invalid','--skip-email','--prompt=admin_password'],input.password+'\n');
+      // WP's installation URL guess can incorporate a Windows path in CLI mode.
+      for(const key of ['home','siteurl'])await this.wp(web,['option','update',key,'http://127.0.0.1:'+p.port]);
       await this.wp(web,['option','update','WPLANG','es_ES']);await this.wp(web,['option','update','permalink_structure','/%postname%/']);await this.wp(web,['eval','flush_rewrite_rules(false);']);
       if(!this.plugins)throw new Error('Faltan los recursos de SITIOO Migration.');update('Instalando y activando SITIOO Migration…');await this.plugins.installNew(p);
-      p.wpVersion=(await this.wp(web,['core','version'])).stdout.trim();update('Comprobando que tu web responde…');await this.http(p);p.status='stopped';await this.store.save();update('Tu web está lista.');return this.list();
+      p.wpVersion=(await this.wp(web,['core','version'])).stdout.trim();
+      if(options.prepare)await options.prepare(p,web);
+      if(options.start===false)await this.stop(p.id);
+      else {update('Comprobando que tu web responde…');await this.http(p);}
+      p.status='stopped';await this.store.save();update('Tu web está lista.');return this.list();
     }catch(e){try{await this.stop(p.id);}catch{}p.status='error';await this.store.save();throw e;}
-  });}
+  }
   list(){return this.store.items.map(p=>({...p,status:this.active.has(p.id)?'running':p.status}));}
   async start(id){return this.exclusive(async()=>{const p=this.store.get(id);if(p.status!=='stopped')throw new Error('El proyecto necesita recuperación.');if(this.active.has(id))return;try{await this.database(p);await this.http(p);}catch(e){await this.stop(id);throw e;}});}
   async stop(id){const p=this.store.get(id),services=this.active.get(id);if(!services)return;await services.http?.stop();if(services.db.exitCode===null&&!services.db.signalCode){await this.sql(p,'SHUTDOWN;');await waitOwnedExit(services.db);}this.active.delete(id);this.secrets.delete(id);}

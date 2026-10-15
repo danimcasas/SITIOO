@@ -1,7 +1,7 @@
 {
   "name": "SITIOO",
   "tagline": "Tu web empieza aqu\u00ed.",
-  "version": "0.2.0-beta.2",
+  "version": "0.3.0-beta.1",
   "accent": "#6d4aff",
   "icon": "../../config/assets/sitioo.png",
   "creators": [

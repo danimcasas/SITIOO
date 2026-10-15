@@ -1,4 +1,4 @@
-# Accesos locales — SITIOO 0.2.0-beta.2
+# Accesos locales — SITIOO 0.3.0-beta.1
 
 La guía de uso está en `manual-app.html`, apartado «Conservar y recuperar los accesos».
 

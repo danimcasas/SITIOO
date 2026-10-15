@@ -53,7 +53,9 @@ class LocalEngine {
     const services=this.active.get(project.id);services.http=child;
     await waitFor(async()=>{try{const response=await fetch(`http://127.0.0.1:${project.port}/wp-login.php`,{signal:AbortSignal.timeout(2000),redirect:'manual'});return response.status===200&&child.exitCode===null&&!child.signalCode;}catch{return false;}});
   }
-  async create(input) {return this.exclusive(async()=>{
+  async create(input) {return this.exclusive(()=>this.createLocked(input));}
+  async createLocked(input,options={}) {
+    if(!this.locked)throw new Error('La creación requiere una operación exclusiva.');
     if(!this.manifest)throw new Error('Faltan los componentes del motor.');
     const data=validateInput(input);
     if(data.type!=='wordpress')throw new Error('WooCommerce todavía no está disponible en esta beta.');
@@ -86,11 +88,12 @@ class LocalEngine {
       if(!this.plugins)throw new Error('Faltan los recursos de SITIOO Migration.');
       await this.plugins.installNew(p);
       p.wpVersion=(await this.wp(web,['core','version'])).stdout.trim();
-      update('Comprobando que tu web responde…');
-      await this.http(p);
+      if(options.prepare)await options.prepare(p,web);
+      if(options.start===false)await this.stop(p.id);
+      else {update('Comprobando que tu web responde…');await this.http(p);}
       p.status='stopped';await this.store.save();update('¡Tu web está lista!');return this.list();
     } catch(e) {await this.stop(p.id);p.status='error';await this.store.save();throw e;}
-  });}
+  }
   list() {return this.store.items.map(p=>({...p,status:this.active.has(p.id)?'running':p.status}));}
   async start(id) {return this.exclusive(async()=>{const p=this.store.get(id);if(p.status!=='stopped')throw new Error('El proyecto necesita recuperación.');if(this.active.has(id))return;try{await this.database(p);await this.http(p);}catch(e){await this.stop(id);throw e;}});}
   async stop(id) {this.store.get(id);const services=this.active.get(id);if(!services)return;await stop(services.http);await stop(services.db);this.active.delete(id);}

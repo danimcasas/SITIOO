@@ -1,6 +1,6 @@
 {
   "name": "sitioo",
-  "version": "0.2.0-beta.2",
+  "version": "0.3.0-beta.1",
   "private": true,
   "description": "Tu web empieza aquí. WordPress local para Windows y macOS.",
   "main": "apps/desktop/main.cjs",
@@ -14,13 +14,15 @@
     "prepare:windows": "pwsh -NoProfile -File scripts/build-native.ps1 && pwsh -NoProfile -File scripts/prepare-windows.ps1 && pwsh -NoProfile -File scripts/prepare-crt.ps1 && node scripts/prepare-migration.cjs",
     "dist:win": "electron-builder --win nsis --x64",
     "test:windows": "node scripts/run-windows-tests.cjs",
-    "test:migration:windows": "node scripts/test-migration-windows.cjs"
+    "test:migration:windows": "node scripts/test-migration-windows.cjs",
+    "test:transfers:windows": "node scripts/run-transfers-tests.cjs",
+    "test:desktop:windows": "node scripts/test-desktop-transfers.cjs"
   },
   "build": {
     "appId": "local.sitioo.desktop",
     "productName": "SITIOO",
     "directories": {
-      "output": "dist/0.2.0-beta.2"
+      "output": "dist/0.3.0-beta.1"
     },
     "files": [
       "apps/**/*",

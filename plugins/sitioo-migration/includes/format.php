@@ -2,7 +2,7 @@
 /** SITIOO package format 1. GPL-2.0-or-later. */
 namespace Sitioo;
 class Failure extends \RuntimeException {}
-const VERSION = '0.2.0-beta.2';
+const VERSION = '0.3.0-beta.1';
 const FORMAT = 1;
 const PART_BYTES = 4194304;
 function check($ok, $message) { if (!$ok) throw new Failure($message); }

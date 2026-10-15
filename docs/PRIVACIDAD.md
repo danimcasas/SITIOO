@@ -1,6 +1,6 @@
 # Privacidad de SITIOO y SITIOO Migration
 
-Información del funcionamiento de SITIOO 0.2.0-beta.2 para Windows, revisada el 15 de octubre de 2026.
+Información del funcionamiento de SITIOO 0.3.0-beta.1 para Windows, revisada el 15 de octubre de 2026.
 
 SITIOO guarda los proyectos WordPress y sus copias en el ordenador. La revisión del código propio no ha encontrado analítica, publicidad ni envío automático de informes a los autores. No exige crear una cuenta de SITIOO. La revisión de código no constituye una captura completa del tráfico de todos los componentes.
 
@@ -25,6 +25,8 @@ La comprobación de red de una instalación nueva y la evaluación de un aviso u
 ## Exportación y migración
 
 SITIOO crea copias y paquetes exportados en la ubicación elegida. Pueden contener datos personales del sitio, usuarios y código. **Los paquetes no están cifrados y no deben publicarse.**
+
+Duplicar, recuperar e importar desde la aplicación utiliza copias privadas de preparación en el mismo equipo. El nuevo proyecto recibe claves propias. Los archivos de preparación e intentos fallidos se conservan, ocupan espacio y forman parte de los datos locales.
 
 SITIOO Migration sube los archivos seleccionados al WordPress de destino donde se ejecuta el plugin. Las peticiones de importación se realizan contra ese sitio. Su hosting y sus componentes tratarán el contenido conforme a su configuración y políticas.
 

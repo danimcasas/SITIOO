@@ -5,3 +5,5 @@
 #access{background:white;border:1px solid #e8e9f0;border-radius:18px;padding:26px}.check-label{display:flex;gap:10px;align-items:center}.check-label input{width:18px;height:18px;margin:0}#access-url{overflow-wrap:anywhere;font-size:13px}
 
 #backups{background:white;border:1px solid #e8e9f0;border-radius:18px;padding:26px}#backups ol{padding-left:20px;color:#747788;line-height:1.8}#backup-history{display:grid;gap:12px;margin-top:24px}.backup-row{padding:16px;border:1px solid #e8e9f0;border-radius:12px}.backup-row p{margin:8px 0;font-size:13px}
+
+#transfer-note{max-width:560px}#transfer-note p{font-size:13px}.check-label input{flex-shrink:0}.section-heading{flex-wrap:wrap}.card{min-width:0}#wizard-title{overflow-wrap:anywhere}

@@ -4,6 +4,7 @@ const {pathToFileURL}=require('node:url');
 const {Store}=require('../../packages/projects/store.cjs');
 const {LocalEngine}=require('../../packages/engine/local.cjs');
 const {Backups}=require('../../packages/backups/manager.cjs');
+const {ProjectTransfers}=require('../../packages/projects/transfers.cjs');
 const {PluginManager}=require('../../packages/migration/plugin-manager.cjs');
 const {AccessVault}=require('../../packages/access/vault.cjs');
 const brand=require('../../config/brand.json');
@@ -24,6 +25,8 @@ app.whenReady().then(async()=>{
   const assets=app.isPackaged?path.join(process.resourcesPath,'migration'):path.resolve(__dirname,'../../.local/migration-assets');
   const plugins=new PluginManager(engine,assets);
   const backups=new Backups(path.join(app.getPath('userData'),'backups'),engine,assets,data=>window?.webContents.send('sitioo:progress',data));
+  const transfers=new ProjectTransfers(path.join(app.getPath('userData'),'transfers'),engine,backups,assets,data=>window?.webContents.send('sitioo:progress',data));
+  let selectedImport=null;
   const entry=pathToFileURL(path.join(__dirname,'index.html')).href;
   const handle=(name,fn)=>ipcMain.handle('sitioo:'+name,async(event,arg)=>{
     if(event.sender!==window.webContents||event.senderFrame!==window.webContents.mainFrame||event.senderFrame.url!==entry)throw new Error('Operación no autorizada.');
@@ -42,6 +45,29 @@ app.whenReady().then(async()=>{
     return {projects,accessWarning};
   });
   handle('access-status',id=>vault.status(id));
+  handle('transfer-select',async()=>{
+    const chosen=await dialog.showOpenDialog(window,{title:'Selecciona el índice de la copia de SITIOO',properties:['openFile'],filters:[{name:'Índice de SITIOO (sitioo-manifest.json)',extensions:['json']}]});
+    if(chosen.canceled)return null;
+    const file=chosen.filePaths[0],preview=await transfers.inspect(file),token=require('node:crypto').randomUUID();
+    selectedImport={file,hash:preview.hash,token};
+    const {hash,...summary}=preview;return {...summary,token};
+  });
+  handle('transfer-create',async data=>{
+    if(!ready)throw new Error('Faltan componentes del motor.');
+    if(!data||!['duplicate','restore','import'].includes(data.kind)||typeof data.saveAccess!=='boolean'||data.trusted!==true)
+      throw new Error('Revisa los datos y confirma que conoces el origen de la copia.');
+    if(data.saveAccess)await vault.requireEncryption();
+    const request={kind:data.kind,id:data.id,version:data.version};
+    if(data.kind==='import'){
+      if(!selectedImport||selectedImport.token!==data.token)throw new Error('Selecciona primero el índice de la copia.');
+      request.manifestPath=selectedImport.file;request.expectedHash=selectedImport.hash;
+    }
+    const result=await transfers.run(request,data);
+    let accessWarning='';
+    if(data.saveAccess)try{await vault.save(result.projectId,data.admin,data.password);}catch{accessWarning='El proyecto está recuperado, pero no se pudo guardar su acceso. Conserva la contraseña y guárdala desde «Acceso a WordPress».';}
+    if(data.kind==='import')selectedImport=null;
+    return {...result,accessWarning};
+  });
   handle('access-save',data=>{if(!data||typeof data!=='object')throw new Error('Datos no válidos.');return vault.save(data.id,data.username,data.password);});
   handle('access-reveal',async id=>{const data=await vault.read(id);if(!data)throw new Error('Todavía no has guardado el acceso de este proyecto.');return data.password;});
   handle('access-copy',async data=>{if(!data||!['username','password'].includes(data.field))throw new Error('Acción no válida.');const saved=await vault.read(data.id);if(!saved)throw new Error('No hay un acceso guardado.');clipboard.writeText(saved[data.field]);return true;});

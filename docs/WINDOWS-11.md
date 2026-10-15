@@ -1,4 +1,4 @@
-# SITIOO 0.2.0-beta.2 para Windows 11 x64
+# SITIOO 0.3.0-beta.1 para Windows 11 x64
 
 ## Arquitectura
 
@@ -8,7 +8,7 @@ El ayudante nativo `native/sitioo-win.cpp` crea cada proceso suspendido, lo inco
 
 Los secretos del motor se generan al crear cada proyecto y se guardan con DPAPI CurrentUser. No se usa CRYPTPROTECT_LOCAL_MACHINE ni almacenamiento alternativo. La base se inicializa sin red mediante bootstrap. Las claves viajan a los procesos hijos en memoria; no figuran en argumentos, wp-config.php ni archivos temporales de texto. El archivo wp-config.php consulta variables del proceso. La bóveda de accesos usa safeStorage asíncrono de Electron y rechaza el guardado cuando no hay cifrado disponible. Las carpetas privadas restringen su ACL a la cuenta actual y SYSTEM; los enlaces y puntos de redirección se rechazan.
 
-WP-CLI se invoca con su ruta relativa al directorio del motor. La configuración de enlaces utiliza option update y flush_rewrite_rules dentro de PHP: evita el subproceso de `wp rewrite structure`, que altera rutas con espacios/acentos en Windows. Los argumentos externos se pasan como listas con shell:false.
+WP-CLI se invoca con su ruta relativa al directorio del motor. Se fijan home y siteurl con la dirección local del proyecto después de instalar WordPress para evitar que el cálculo de URL desde consola añada una ruta larga. La configuración de enlaces utiliza option update y flush_rewrite_rules dentro de PHP: evita el subproceso de `wp rewrite structure`, que altera rutas con espacios/acentos en Windows. Los argumentos externos se pasan como listas con shell:false.
 
 Los proyectos, bases, accesos y copias viven fuera del directorio instalado. Ubicación normal: `%APPDATA%\SITIOO`. SITIOO_DATA_DIR permite un perfil de prueba aislado. La copia de desarrollo usa `.local/profile` y `.local/projects`. El instalador por usuario conserva AppData por defecto y no eleva permisos. No se requiere reiniciar Windows.
 
@@ -40,12 +40,14 @@ node scripts/prepare-migration.cjs
 npm test
 node scripts/run-windows-tests.cjs
 node scripts/test-migration-windows.cjs
+node scripts/run-transfers-tests.cjs
+node scripts/test-desktop-transfers.cjs
 npm run dist:win
 ```
 
 `prepare-crt.ps1` comprueba la firma de Microsoft y extrae únicamente DLL x64 redistribuibles junto a PHP/MariaDB. No ejecuta vc_redist ni modifica el sistema. El ayudante se compila con /MT. El script de compilación debe copiar su resultado y fuente al plugin antes de preparar la migración.
 
-Electron Builder 26.15.3 utiliza su herramienta NSIS empaquetada como `nsis-3.0.4.1`, recursos 3.4.1 y herramientas de iconos/7zip. Ese es el paquete resuelto realmente por el compilador; la propuesta inicial estimaba NSIS 3.12. El resultado se guarda en `dist/0.2.0-beta.2`. El ejecutable final es `SITIOO-0.2.0-beta.2-windows-x64-setup.exe`.
+Electron Builder 26.15.3 utiliza su herramienta NSIS empaquetada como `nsis-3.0.4.1`, recursos 3.4.1 y herramientas de iconos/7zip. Ese es el paquete resuelto realmente por el compilador; la propuesta inicial estimaba NSIS 3.12. El resultado se guarda en `dist/0.3.0-beta.1`. El ejecutable final es `SITIOO-0.3.0-beta.1-windows-x64-setup.exe`.
 
 No se promete identidad binaria entre compilaciones: las marcas de tiempo y las herramientas pueden afectar los bytes. Las versiones y sumas permiten reproducir los componentes. No se utiliza una clave de firma ni se publica automáticamente.
 
@@ -58,3 +60,10 @@ No se promete identidad binaria entre compilaciones: las marcas de tiempo y las 
 `test-migration-windows.cjs` crea origen y destino ficticios; comprueba copias, paquetes dañados, permisos de acceso, subida repetible, importación, cambio de dominio/prefijo, datos serializados, archivo dividido, interrupciones simuladas y recuperación. Conserva los datos de prueba en `.local`; no incluirlos en una entrega.
 
 La instalación, interfaz instalada, actualización y desinstalación requieren comprobación adicional con el .exe real. Una compilación correcta no cuenta como esas pruebas. No reiniciar Windows sin coordinación. El informe de entrega indica resultados y límites; esta documentación no certifica por sí sola la ejecución.
+
+
+## Transferencias a nuevos proyectos
+
+ProjectTransfers es compartido entre motores. La aplicación mantiene una operación exclusiva durante la copia y la recuperación, valida los paquetes y usa un directorio privado de preparación. createLocked permite importar antes de abrir HTTP; el destino se detiene al terminar. El importador PHP compartido mantiene formato 1. El motor Mac conserva su adaptador; la ejecución física de estas funciones en Mac sigue pendiente.
+
+Las pruebas de interfaz usan exclusivamente el perfil ficticio generado por test:transfers:windows. El selector de archivo recibe un paquete ficticio controlado. La comprobación de la aplicación instalada abre su ejecutable real con un puerto de depuración local temporal y lo cierra al terminar. No utiliza la sesión de Chrome del usuario. La prueba de paquetes del exportador anterior es opcional cuando su carpeta conservada está disponible; el informe lo indica.

@@ -4,15 +4,15 @@
 
 Creado por **danimcasas.com e iNextalent.com**. El código de SITIOO se distribuye con licencia **GPL v2 o posterior**. Cada componente de terceros conserva su licencia y sus atribuciones.
 
-## Descargar la beta
+## Estado de esta versión
 
 La [página oficial de SITIOO](https://danimcasas.com/sitioo-wordpress-local/) ofrece las descargas de Mac y Windows, el plugin independiente y los manuales.
 
-La versión Windows de este repositorio es **0.2.0-beta.2 para Windows 11 x64**. Incluye un instalador guiado por usuario y los componentes necesarios: Electron 44.7.0, PHP 8.4.26, MariaDB 11.4.13, WordPress 7.1.3, WP-CLI 2.12.0 y SITIOO Migration 0.2.0-beta.2. El usuario final no necesita instalar Node.js, PHP o MariaDB por separado.
+Esta copia de desarrollo local prepara **0.3.0-beta.1 para Windows 11 x64**. Incluye un instalador guiado por usuario y los componentes necesarios: Electron 44.7.0, PHP 8.4.26, MariaDB 11.4.13, WordPress 7.1.3, WP-CLI 2.12.0 y SITIOO Migration 0.3.0-beta.1. El usuario final no necesita instalar Node.js, PHP o MariaDB por separado.
 
-**El instalador Windows actual no tiene firma digital.** Está probado en un PC Windows 11; las pruebas en Windows limpio, después de reiniciar Windows y de intercambio con un Mac físico siguen pendientes. Consulta el [informe de pruebas](docs/PRUEBAS-WINDOWS.md) antes de usar la beta con un proyecto importante.
+**El instalador Windows actual no tiene firma digital.** Está probado en un PC Windows 11; las pruebas en Windows limpio, después de reiniciar Windows y de intercambio con un Mac físico siguen pendientes. Consulta el [informe de pruebas](docs/PRUEBAS-0.3.0-beta.1.md) antes de usar la beta con un proyecto importante.
 
-Este repositorio publica el código y las instrucciones de compilación. Los instaladores y los motores redistribuidos se descargan desde la página oficial y quedan fuera del historial de código.
+La entrega 0.3.0-beta.1 se prepara localmente para revisión. La descarga pública anterior se conserva hasta que se autorice publicar esta versión. Los motores y los datos de proyectos quedan fuera del historial de código.
 
 ## Funciones
 
@@ -20,7 +20,10 @@ Este repositorio publica el código y las instrucciones de compilación. Los ins
 - Claves del motor cifradas con DPAPI por cuenta de Windows; accesos opcionales con safeStorage. Sin alternativa en texto plano.
 - Procesos supervisados por objetos Job de Windows; sin servicios generales ni cierres por nombre de proceso.
 - Plugin de migración incluido y activo en nuevos proyectos. Instalación/actualización confirmada en existentes, con comprobación de hashes y conservación de la versión anterior.
-- Copias numeradas creadas por SITIOO. Exportación en formato 1. Importación y recuperación desde el plugin en WordPress.
+- Copias numeradas creadas por SITIOO y exportación en formato 1.
+- Duplicación del estado actual de un proyecto, recuperación de una copia anterior e importación de paquetes desde la aplicación. Las tres operaciones crean un proyecto independiente y conservan el origen.
+- Nuevo administrador elegido por el usuario, accesos opcionales cifrados y plugins importados inactivos para revisión. El nuevo sitio queda detenido.
+- Importación, cambio de dominio y recuperación de migración en un hosting desde el plugin en WordPress.
 - Actualización y desinstalación conservan los datos de la aplicación por defecto.
 
 ## Documentación

@@ -1,5 +1,7 @@
 const {contextBridge,ipcRenderer} = require('electron');
 contextBridge.exposeInMainWorld('sitioo',Object.freeze({
+  transferSelect:()=>ipcRenderer.invoke('sitioo:transfer-select'),
+  transferCreate:data=>ipcRenderer.invoke('sitioo:transfer-create',data),
   dataFolder:()=>ipcRenderer.invoke('sitioo:data-folder'),
   pluginStatus:id=>ipcRenderer.invoke('sitioo:plugin-status',id),
   pluginInstall:id=>ipcRenderer.invoke('sitioo:plugin-install',id),

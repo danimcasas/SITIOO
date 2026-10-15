@@ -29,5 +29,5 @@ app.whenReady().then(async()=>{
   const marker=await engine.wp(web,['option','get','sitioo_fictitious_marker']);assert.equal(marker.stdout.trim(),'contenido ficticio único');
   results.push({test:'Dato ficticio previo conservado tras instalar',state:'superada'});
  } catch(e){results.push({test:'Validación instalada',state:'fallida',message:e.message});process.exitCode=1;}
- finally {await engine?.close();const report={version:'0.2.0-beta.2',date:new Date().toISOString(),code:'app.asar instalado',engine:'resources/engine instalado',results};await fs.writeFile(path.resolve('../../pruebas/beta.2/perfil-instalado-'+Date.now()+'.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));app.exit(process.exitCode||0);}
+ finally {await engine?.close();const report={version:require('../package.json').version,date:new Date().toISOString(),code:'app.asar instalado',engine:'resources/engine instalado',results};await fs.writeFile(path.resolve('../../pruebas/0.3.0-beta.1/perfil-instalado-'+Date.now()+'.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));app.exit(process.exitCode||0);}
 });

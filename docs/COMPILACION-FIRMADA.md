@@ -1,6 +1,6 @@
 # Preparación y firma de Windows
 
-Este proceso conserva la versión funcional 0.2.0-beta.2. Los cambios afectan a metadatos de los ejecutables, preparación de paquetes y controles de firma. El instalador publicado anteriormente continúa sin firma y no se sustituye automáticamente.
+El proceso toma la versión del paquete de fuentes; esta entrega local corresponde a 0.3.0-beta.1. Mantiene la integración de firma preparada en 0.2.0-beta.2. El modo de ensayo produce un ejecutable sin firma y sin publicar. La activación real depende de SignPath y de las autorizaciones de la cuenta.
 
 ## Ensayo sin certificado
 

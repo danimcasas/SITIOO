@@ -1,4 +1,4 @@
-SITIOO 0.2.0-beta.2 — avisos de redistribución
+SITIOO 0.3.0-beta.1 — avisos de redistribución
 Autoría: danimcasas.com e iNextalent.com.
 SITIOO y SITIOO Migration: GNU GPL versión 2 o posterior; véase LICENSE.
 
