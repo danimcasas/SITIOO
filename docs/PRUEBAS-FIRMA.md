@@ -2,7 +2,7 @@
 
 SITIOO 0.2.0-beta.2 · 15 de octubre de 2026.
 
-Código de la integración: [69c429d](https://github.com/danimcasas/SITIOO/commit/69c429d4bc9574854cb4ace4c7e2bf66bce787e6). Esta revisión prepara la firma. La beta distribuida anteriormente sigue sin firma y conserva sus archivos originales.
+Código de la integración y corrección del arranque en GitHub: [044694d](https://github.com/danimcasas/SITIOO/commit/044694d752ebd51547e9e7f160a30564c18f43af). Esta revisión prepara la firma. La beta distribuida anteriormente sigue sin firma y conserva sus archivos originales.
 
 ## Entorno y alcance
 
@@ -17,13 +17,20 @@ El ensayo de GitHub utiliza el ejecutor estándar `windows-2025`. Es una comprob
 | Ejecutar `npm test`, incluidos los controles del formato PE, contenido ejecutable y lista de archivos permitidos | Ningún fallo; rechazar archivos alterados o no permitidos | 31 pruebas: 27 superadas, 4 omitidas por corresponder a Mac, 0 fallidas | Superada en Windows; Mac pendiente |
 | Ejecutar el modo de firma real fuera del origen autorizado de GitHub | Detenerse antes de solicitar firmas | La inicialización rechazó el entorno no autorizado | Superada |
 | Verificar un auxiliar sin firma con `-RequireSignature` | Rechazar el archivo | La verificación de Windows lo rechazó | Superada |
+| Simular la terminación del proceso de empaquetado antes de crear la aplicación | Detectar el cierre sin esperar al límite de 30 minutos | Fallo detectado en 129 ms | Superada |
 | Construir localmente en modo `rehearsal` | Generar aplicación, auxiliar, desinstalador e instalador con producto SITIOO y versión coherente | Se generaron las cuatro etapas y el instalador de ensayo | Superada; ensayo sin firma |
 | Ejecutar `check-bundle.cjs` sobre el ensayo | Manifiesto correcto, auxiliares idénticos y componentes de terceros intactos | Manifiesto verificado; dos auxiliares idénticos; 123 binarios del motor de terceros sin cambios | Superada |
 | Comparar los 12 archivos del plugin de la beta.2 original con la lista de compatibilidad y consultar su estado | Ofrecer una actualización explícita para esa copia conocida | Estado `update`, permitido; original conservado | Superada |
-| Ejecutar el workflow desde `main` en un ejecutor Windows nuevo de GitHub | Reproducir la construcción y los controles de integridad | [Ejecución pública](https://github.com/danimcasas/SITIOO/actions/runs/38656564086) en curso al preparar este informe | Pendiente |
+| Ejecutar el workflow desde `main` en un ejecutor Windows nuevo de GitHub | Reproducir la construcción y los controles de integridad | [Ejecución pública](https://github.com/danimcasas/SITIOO/actions/runs/38657796075) completada correctamente en 5 min 55 s; cuatro etapas, plugin y 123 componentes verificados | Superada; ensayo sin firma |
 | Recibir y verificar firmas reales de SignPath | Certificado autorizado, sello de tiempo y contenido ejecutable conservado | El servicio todavía no está habilitado | Pendiente de aceptación y configuración |
 
 El ensayo verifica metadatos y construcción sin presentar los archivos como firmados. Las pruebas negativas confirman el rechazo de entradas inválidas; no acreditan una respuesta real de SignPath.
+
+La primera ejecución pública, [38656564086](https://github.com/danimcasas/SITIOO/actions/runs/38656564086), se canceló durante la espera de la aplicación para añadir supervisión del proceso y registro periódico de avance. No se contabiliza como una compilación superada.
+
+La segunda ejecución, [38657544448](https://github.com/danimcasas/SITIOO/actions/runs/38657544448), detectó un fallo real: el empaquetador terminaba al cerrar el paso inicial de GitHub. Se corrigió el arranque separando sus canales de entrada y salida de la consola del paso. La ejecución enlazada en la tabla comprueba esa corrección.
+
+Se conserva el [informe de integridad de GitHub](evidencias/firma-ensayo-2026-10-15.json), vinculado al commit probado. Su campo `installationTested` permanece en `false`: construir el instalador no acredita su instalación. El informe identifica expresamente el modo `rehearsal`, sin firma.
 
 ## Funcionamiento con el auxiliar actualizado
 

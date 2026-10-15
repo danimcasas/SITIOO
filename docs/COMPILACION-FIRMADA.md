@@ -11,10 +11,13 @@ En un Windows x64 local con las herramientas descritas en [WINDOWS-11.md](WINDOW
 ```powershell
 $env:SITIOO_SIGNING_MODE = 'rehearsal'
 $env:SITIOO_SIGNING_DIR = Join-Path $PWD ('.local\signing-' + [guid]::NewGuid().ToString('N'))
+$env:npm_config_cache = Join-Path $PWD '.local\cache\npm'
+$env:ELECTRON_CACHE = Join-Path $PWD '.local\cache\electron'
 $env:ELECTRON_BUILDER_CACHE = Join-Path $PWD '.local\cache\electron-builder'
 $env:CSC_IDENTITY_AUTO_DISCOVERY = 'false'
 New-Item -ItemType Directory -Path .local -Force | Out-Null
 node scripts/signpath/initialize.cjs
+npm ci --no-audit --no-fund
 pwsh -NoProfile -File scripts/fetch-windows.ps1
 pwsh -NoProfile -File scripts/build-native.ps1
 node scripts/signpath/stage-native.cjs
@@ -44,6 +47,7 @@ La conexión y los certificados reales solo se pueden verificar después del alt
 
 - El auxiliar se compila desde C++ con metadatos SITIOO y versión coherente. Después de firmarlo se copia al motor y al plugin; a continuación se generan el ZIP y el manifiesto de integridad del plugin.
 - Electron Builder prepara el ejecutable de la aplicación. Su función de firma acepta una ruta exacta de SITIOO, prepara el archivo y espera al resultado de la acción oficial de SignPath.
+- En GitHub, el empaquetador continúa entre etapas mediante un proceso independiente con sus salidas dirigidas a archivos y sin heredar la entrada de la consola inicial. Se conserva la identificación de proceso de GitHub para su limpieza al terminar el trabajo. La supervisión comprueba que siga activo y muestra avance cada minuto. La publicación automática está desactivada también en la llamada al empaquetador.
 - El mismo empaquetador prepara y firma el desinstalador antes de incorporarlo al instalador. No se recompila un segundo desinstalador que pueda diferir del firmado.
 - El instalador se firma al final. Los bytes ejecutables deben coincidir con los enviados, excluyendo únicamente los campos y datos propios de Authenticode. Se comprueban la firma de Windows, el sello de tiempo y la huella del certificado aprobado.
 - PHP, MariaDB y las DLL del motor conservan sus bytes. La comprobación final rechaza cambios en esos componentes. La selección de archivos enviados a SignPath excluye los binarios de terceros.

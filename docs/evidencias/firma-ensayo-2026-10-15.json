@@ -1,0 +1,27 @@
+{
+  "version": "0.2.0-beta.2",
+  "mode": "rehearsal",
+  "commit": "044694d752ebd51547e9e7f160a30564c18f43af",
+  "files": [
+    {
+      "file": "SITIOO.exe",
+      "sha256": "0f05c325589b4ebcd4ffebd3c5ea730b32a02d04929547b1316a5e246d0523a9"
+    },
+    {
+      "file": "sitioo-win.exe",
+      "sha256": "173dd453b900c58dbf69a1a211e99e93510d19d14d73a7f7258b08c2a73728d1"
+    },
+    {
+      "file": "SITIOO-0.2.0-beta.2-windows-x64-setup.__uninstaller.exe",
+      "sha256": "1e0179a80a5c1d4c061ae68dc2420a324110ebca25b28e716cb3a202fffe0616"
+    },
+    {
+      "file": "SITIOO-0.2.0-beta.2-windows-x64-setup.exe",
+      "sha256": "8157d7942038f9c91c21291091da2ba68330cbb564fa60f8273f35aa6c3ff8db"
+    }
+  ],
+  "pluginManifestVerified": true,
+  "helperCopiesIdentical": true,
+  "thirdPartyBinariesUnchanged": 123,
+  "installationTested": false
+}
